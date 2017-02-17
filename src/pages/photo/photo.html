@@ -1,0 +1,44 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Photos</ion-title>
+        <ion-buttons end>
+            <button *ngIf="user.username == null" ion-button icon-only class="renderBlack"
+                    [navPush]="connectPage">
+                <ion-icon name="person-add"></ion-icon>
+            </button>
+            <button *ngIf="user.username" ion-button icon-only class="renderBlack"
+                    [navPush]="editPhoto">
+                <ion-icon name="send"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <div class="gallery-button" text-center>
+        <div>
+            <ion-icon  class="ionTab" 
+                name="brush" [navPush]="editPhoto"></ion-icon> 
+            <ion-icon class="ionTab" name="add" on-tap="openGallery()"></ion-icon> 
+            <ion-icon class="ionTab" name="share" on-tap="upload()"></ion-icon> 
+            <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
+                name="trash" on-tap="onDelete()"></ion-icon> 
+        </div>
+        <!--<img 
+            [src]="myImage" id='image'/>
+        <button (click)="addFilter()">Filter</button>-->
+        <div *ngIf="grid">
+            <ion-grid>
+                <ion-row *ngFor="let row of grid">
+                    <ion-col *ngFor="let img of row">
+                         <img [src]="img" class="toDisplay" 
+                            [ngClass]="{selected: selected(img)}"
+                            (click)="onSelect(img)" 
+                            [style.width.px]="getSquareSize()" 
+                            [style.height.px]="getSquareSize()"/>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </div>
+</ion-content>

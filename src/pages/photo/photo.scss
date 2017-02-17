@@ -1,0 +1,22 @@
+page-home {
+
+}
+
+.toDisplay{
+    //width: 200px;
+    //height: 200px;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.selected{
+    border: 5px solid #A52A2A;
+}
+
+.disable{
+    opacity: 0.5;
+}
+
+.renderBlack{
+    color: black;
+}

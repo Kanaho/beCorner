@@ -17,10 +17,10 @@
 <ion-content padding>
     <div class="gallery-button" text-center>
         <div>
-            <ion-icon  class="ionTab" 
+            <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
                 name="brush" [navPush]="editPhoto"></ion-icon> 
-            <ion-icon class="ionTab" name="add" on-tap="openGallery()"></ion-icon> 
-            <ion-icon class="ionTab" name="share" on-tap="upload()"></ion-icon> 
+            <ion-icon class="ionTab" name="add" on-tap="openGallery()"></ion-icon>
+            <ion-icon class="ionTab" name="share" on-tap="upload()"></ion-icon>
             <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
                 name="trash" on-tap="onDelete()"></ion-icon> 
         </div>

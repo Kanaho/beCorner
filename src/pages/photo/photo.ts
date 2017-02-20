@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
-import {Camera, ImagePicker, File} from 'ionic-native';
+import {Camera, ImagePicker, File, SocialSharing} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
 /*import * as Caman from 'caman';
@@ -27,7 +27,6 @@ export class PhotoPage {
     private grid: string[][];
     editPhoto = EditPhoto;
     connectPage = ConnectPage;
-    private msg: string;
 
     private myImage: string = "http://www.w3schools.com/images/w3schools_green.jpg";
 
@@ -40,7 +39,7 @@ export class PhotoPage {
 
     private openGallery(): void {
 
-        /*let pickerOptions = {
+        let pickerOptions = {
             sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
             destinationType: Camera.DestinationType.DATA_URL,
             quality: 100,
@@ -52,8 +51,9 @@ export class PhotoPage {
             //this.addPictures();
             this.setupGrid();
         },
-            (err) => {});*/
-        let cameraOptions = {
+            (err) => {});
+
+        /*let cameraOptions = {
             sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
             destinationType: Camera.DestinationType.DATA_URL,
             quality: 100,
@@ -104,7 +104,7 @@ export class PhotoPage {
             function fail(){
                 console.log('fail');
             }
-        });
+        });*/
     }
 
     /*addPictures() {
@@ -114,14 +114,14 @@ export class PhotoPage {
     selected(img: string): boolean {
         return this.photoService.getSel().indexOf(img) >= 0;
     }
-    
+
     onSelect(img: string): void {
-        if(this.selected(img)){
+        if (this.selected(img)) {
             this.photoService.unSelect(img);
-        }else{
+        } else {
             this.photoService.onSelect(img);
         }
-        
+
     }
 
     onDelete(): void {
@@ -171,6 +171,11 @@ export class PhotoPage {
         })
     }
     upload(): void {
-
+        SocialSharing.share("Envoyé depuis BeCorner", null,
+            this.photoService.getPictures(), null).then(() => {
+                console.log("Share done");
+            }, () => {
+                console.log("Share cancelled");
+            })
     }
 }

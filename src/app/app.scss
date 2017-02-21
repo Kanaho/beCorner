@@ -25,6 +25,11 @@ ion-navbar {
         height: 80px;
 }
 
+ion-header {
+    padding-top: 5%;
+    background-color: #FFFFFF;
+}
+
 .gallery-button {
     bottom: 30px;
     //position: absolute;
@@ -49,7 +54,7 @@ ul {
 }
 
 .page{
-    background-image: url('../../img/background.jpg');
+    background-image: url('../img/background.jpg');
     background-size:cover;
     background-repeat:no-repeat;
     background-position: center center;

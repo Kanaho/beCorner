@@ -177,5 +177,5 @@ export class PhotoPage {
             }, () => {
                 console.log("Share cancelled");
             })
-    } 
+    }
 }

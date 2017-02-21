@@ -1,12 +1,12 @@
-<ion-header>
+<ion-header [@flip]="flipState">
     <ion-navbar>
-        <ion-title><img src="../../img/beCorner.jpg"></ion-title>
+        <ion-title><img src="img/beCorner.jpg"></ion-title>
     </ion-navbar>
 </ion-header>
 
-<ion-content class="page">
+<ion-content class="page" [@flip]="flipState">
     <div style="text-align: center" [style.padding-top.px]="getPaddingTop()">
-        <button color="danger" class="addPic" [navPush]="photoPage">
+        <button color="danger" class="addPic" (click)="toPictures()">
             <ion-icon name="md-share" class="shareIcon"></ion-icon> 
             Share my pictures
         </button>

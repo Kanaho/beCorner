@@ -1,7 +1,7 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "beCorner",
+  "author": "Feron Melvyn",
+  "homepage": "",
   "private": true,
   "scripts": {
     "clean": "ionic-app-scripts clean",
@@ -23,6 +23,7 @@
     "caman": "^4.1.2",
     "ionic-angular": "2.0.1",
     "ionic-native": "2.4.1",
+    "ionic-native-transitions": "^1.0.3",
     "ionicons": "3.0.0",
     "rxjs": "5.0.0-beta.12",
     "sw-toolbox": "3.4.0",

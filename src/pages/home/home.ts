@@ -15,7 +15,7 @@ import {PhotoPage} from '../photo/photo';
             state('flipped', style({
                 transform: 'rotateY(-180deg)'
             })),
-            transition('* => flipped', animate('3000ms ease'))
+            transition('* => flipped', animate('1600ms ease'))
         ])
     ]
 })
@@ -31,15 +31,13 @@ export class HomePage {
     }
 
     toPictures() {
-        //this.flipState = (this.flipState == 'notFlipped') ? 'flipped' : 'notFlipped';
         setTimeout(() => {
             //this.navCtrl.push(this.photoPage);
             this.navCtrl.push(this.photoPage, null, {animation: 'fade-transition', direction: 'forward'});
             setTimeout(() => {
                 this.flipState = 'notFlipped';
             }, 800);
-        }, 500);
+        }, 850);
         this.flipState = 'flipped';
-        //this.navCtrl.push(this.photoPage, null, {animation: 'fade-transition', direction: 'forward'});
     }
 }

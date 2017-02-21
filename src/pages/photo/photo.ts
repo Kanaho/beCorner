@@ -16,7 +16,7 @@ declare var Caman: any;
 declare var cordova: any;
 
 @Component({
-    selector: 'page-home',
+    selector: 'photo-home',
     templateUrl: 'photo.html'
 })
 
@@ -146,8 +146,7 @@ export class PhotoPage {
     }
 
     getSquareSize() {
-        let size;
-        return size = (this.plt.isPortrait() ? window.innerWidth / 2
+        return(this.plt.isPortrait() ? window.innerWidth / 2
             : window.innerWidth / 4);
     }
 

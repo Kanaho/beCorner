@@ -1,5 +1,6 @@
 <ion-header>
     <ion-navbar>
+        <img src="img/logo.jpg"/>
         <ion-title>Photos</ion-title>
         <ion-buttons end>
             <button *ngIf="user.username == null" ion-button icon-only class="renderBlack"
@@ -12,9 +13,14 @@
             </button>
         </ion-buttons>
     </ion-navbar>
+    <div class='row'>
+        <div class="col-10 center">
+            <ion-input type="text" placeholder="Nom de mon album" class="albumName"></ion-input>
+        </div>
+    </div>
 </ion-header>
 
-<ion-content padding>
+<ion-content class="page">
     <div class="gallery-button" text-center>
         <div>
             <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 

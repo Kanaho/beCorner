@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
 
-import {NavController, AlertController} from 'ionic-angular';
+import {NavController, AlertController, Platform} from 'ionic-angular';
 
 import {User} from './user/user';
 import {SignPage} from '../connect/sign/sign';
+import {GooglePlus, Facebook} from 'ionic-native';
 
 @Component({
     selector: 'connect',
@@ -14,10 +15,14 @@ export class ConnectPage {
     private username: string;
     private password: string;
     signPage = SignPage;
+    FB_APP_ID: number = 1851028381838808;
 
     constructor(public navCtrl: NavController,
         private alertCtrl: AlertController,
-        private user: User) {};
+        public plt: Platform,
+        private user: User) {
+        Facebook.browserInit(this.FB_APP_ID, "v2.8");
+    };
 
     logIn(): void {
 
@@ -33,7 +38,6 @@ export class ConnectPage {
             this.user.username = this.username;
             this.user.password = this.password;
             this.navCtrl.popToRoot();
-            console.log("Logged In");
         }
     }
 
@@ -45,4 +49,32 @@ export class ConnectPage {
         return valid;
     }
 
+    googleLogin() {
+        GooglePlus.login({
+            //'scopes': '',
+            'webClientId': '423852721492-m7q9k10v3qbd66re8vfjpkbt0cm795eq.apps.googleusercontent.com '
+        }).then(
+            () =>
+                console.log("Login Succed"),
+            function (msg) {
+                alert(msg);
+                console.log(msg);
+            }
+            );
+    }
+
+    facebookLogin() {
+        this.plt.ready().then(function () {
+            let permissions = new Array();
+            permissions = ["public_profile"];
+
+            Facebook.login(permissions).then(() => {
+                alert('succed');
+            }, (msg) => {
+                alert("Ready " + msg);
+            })
+        }, (msg) =>{
+            alert(msg);
+        })
+    }
 }

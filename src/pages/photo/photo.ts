@@ -172,10 +172,10 @@ export class PhotoPage {
     }
     upload(): void {
         SocialSharing.share("Envoyé depuis BeCorner", null,
-            this.photoService.getPictures(), null).then(() => {
+            this.photoService.getSel(), null).then(() => {
                 console.log("Share done");
             }, () => {
                 console.log("Share cancelled");
             })
-    }
+    } 
 }

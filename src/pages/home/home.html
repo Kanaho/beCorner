@@ -1,0 +1,14 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title><img src="../../img/beCorner.jpg"></ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="page">
+    <div style="text-align: center" [style.padding-top.px]="getPaddingTop()">
+        <button color="danger" class="addPic" [navPush]="photoPage">
+            <ion-icon name="md-share" class="shareIcon"></ion-icon> 
+            Share my pictures
+        </button>
+    </div>
+</ion-content>

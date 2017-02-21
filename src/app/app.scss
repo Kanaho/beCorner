@@ -16,12 +16,13 @@
 // automatically applied to the <body> element in the app.
 
 ion-content, .toolbar-background {
-	background-color: #4E8EF7;
-	color: #FFFFFF;
+	background-color: #FFFFFF;
+	//color: #FFFFFF;
 }
 
 ion-navbar {
 	border-bottom: #FFFFFF 1px solid;
+        height: 80px;
 }
 
 .gallery-button {
@@ -45,4 +46,15 @@ p {
 
 ul {
     list-style-type: none;
+}
+
+.page{
+    background-image: url('../../img/background.jpg');
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position: center center;
+}
+
+ion-page > ion-content{
+  background-color: transparent;
 }

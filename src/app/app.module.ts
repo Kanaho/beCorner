@@ -5,6 +5,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 
 import { MyApp } from './app.component';
+import { HomePage} from '../pages/home/home';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { PhotoPage } from '../pages/photo/photo';
@@ -16,6 +17,7 @@ import {SignPage} from '../pages/connect/sign/sign';
 @NgModule({
   declarations: [
     MyApp,
+    HomePage,
     AboutPage,
     ContactPage,
     PhotoPage,
@@ -31,6 +33,7 @@ import {SignPage} from '../pages/connect/sign/sign';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    HomePage,
     AboutPage,
     ContactPage,
     PhotoPage,

@@ -21,5 +21,15 @@
     <div padding>
         <button ion-button color="primary" block on-tap="logIn()">Se connecter</button>
         <button ion-button color="primary" block [navPush]="signPage">S'inscrire</button>
+        <ion-grid class="iconGrid">
+            <ion-row>
+                <ion-col>
+                    <ion-icon class="iconLogin" name="logo-facebook" on-tap="facebookLogin()"></ion-icon>
+                </ion-col>
+                <ion-col>
+                    <ion-icon class="iconLogin" name="logo-googleplus" on-tap="googleLogin()"></ion-icon>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
     </div>
 </ion-content>

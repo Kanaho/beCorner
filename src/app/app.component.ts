@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
-import { TabsPage } from '../pages/tabs/tabs';
+import { HomePage } from '../pages/home/home';
 import {PhotoService} from '../pages/photo/album/photo.service';
 import {User} from '../pages/connect/user/user';
 
@@ -12,7 +12,7 @@ import {User} from '../pages/connect/user/user';
   providers: [PhotoService, User]
 })
 export class MyApp {
-  rootPage = TabsPage;
+  rootPage = HomePage;
 
   constructor(platform: Platform) {
     platform.ready().then(() => {

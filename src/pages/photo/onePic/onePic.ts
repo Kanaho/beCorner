@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 import {PhotoService} from '../album/photo.service';
-import {NavController} from 'ionic-angular';
+import {NavController, NavParams} from 'ionic-angular';
 
 declare var Caman;
 declare function require(name: string);
@@ -12,30 +12,40 @@ declare function require(name: string);
 
 export class OnePic {
     private pic: string;
-    private msg: string = "";
+    private title: string;
 
     //private Canvas = require('canvas');
 
     constructor(private photoService: PhotoService,
-        public navCtrl: NavController) {
+        public navCtrl: NavController,
+        public params:NavParams) {
         
         this.pic = photoService.getSelected();
-        //this.pic = "http://www.w3schools.com/images/w3schools_green.jpg";
- 
+        this.title = params.get("title");
+        if (!this.title) this.title = "Album";
     };
 
     private addFilter() {
-        this.msg = ('AddFilter');
         new Caman('#myImage', function () {
             console.log()
             this.lomo();
             this.render();
 
         });
-        this.msg = ('Filter abord');
     }
     
     exit(){
         this.navCtrl.pop({animation: 'fade-transition', direction: 'back'});
+    }
+    
+    getSquareSize(){
+        if (window.innerWidth > window.innerHeight){
+            return window.innerWidth/2;
+        }
+        return window.innerWidth;
+    }
+    
+    getBackground(){
+        return "url(" +this.pic+")";
     }
 }

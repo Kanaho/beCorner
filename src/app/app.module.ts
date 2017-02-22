@@ -9,10 +9,12 @@ import { HomePage} from '../pages/home/home';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { PhotoPage } from '../pages/photo/photo';
+import {MenuPage} from '../pages/menu/menu';
 import {OnePic} from '../pages/photo/onePic/onePic';
 import { TabsPage } from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
+import {logoHeader} from '../pages/util/logoHeader';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
 
@@ -23,10 +25,12 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     AboutPage,
     ContactPage,
     PhotoPage,
+    MenuPage,
     OnePic,
     TabsPage,
     ConnectPage,
-    SignPage
+    SignPage,
+    logoHeader,
   ],
   imports: [
     IonicModule.forRoot(MyApp),
@@ -40,10 +44,12 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     AboutPage,
     ContactPage,
     PhotoPage,
+    MenuPage,
     OnePic,
     TabsPage,
     ConnectPage,
-    SignPage
+    SignPage,
+    logoHeader,
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

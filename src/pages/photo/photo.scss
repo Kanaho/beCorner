@@ -3,8 +3,6 @@ page-home {
 }
 
 .toDisplay{
-    //width: 200px;
-    //height: 200px;
     object-fit: cover;
     overflow: hidden;
 }
@@ -35,11 +33,11 @@ page-home {
 }
 
 .footerButton{
-    background-color: #be093b;
+    background-color: #be093b !important;
 }
 
-.footerButton:active, .footerButton-on, .footerButton:focus {
-    background-color: #a70834;
+.footerButton:active, .footerButton-on{
+    background-color: #a70834 !important;
 }
 
 .picCol{

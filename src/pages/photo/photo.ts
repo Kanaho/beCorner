@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
-import {Camera, ImagePicker, File, SocialSharing} from 'ionic-native';
+import {Camera, ImagePicker, File, SocialSharing, ScreenOrientation} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
 /*import * as Caman from 'caman';
@@ -9,6 +9,7 @@ import { canvas } from 'canvas';*/
 
 import {PhotoService} from './album/photo.service';
 import {OnePic} from './onePic/onePic';
+import {MenuPage} from '../menu/menu';
 import {ConnectPage} from '../connect/connect';
 import {User} from '../connect/user/user';
 
@@ -26,7 +27,9 @@ export class PhotoPage {
     private temp: string[];
     private grid: string[][];
     private selectedMod: boolean = false;
-    editPhoto = OnePic;
+    private albumName: string;
+    onePhoto = OnePic;
+    menu = MenuPage;
     connectPage = ConnectPage;
 
     private myImage: string = "http://www.w3schools.com/images/w3schools_green.jpg";
@@ -117,15 +120,15 @@ export class PhotoPage {
     }
 
     onSelect(img: string): void {
-        if(this.selectedMod){
+        if (this.selectedMod) {
             if (this.selected(img)) {
                 this.photoService.unSelect(img);
             } else {
                 this.photoService.onSelect(img);
             }
-        }else{
+        } else {
             this.photoService.setSelected(img);
-            this.navCtrl.push(this.editPhoto, null, 
+            this.navCtrl.push(this.onePhoto, {title: this.albumName},
                 {animation: 'fade-transition', direction: 'forward'});
         }
     }
@@ -135,23 +138,26 @@ export class PhotoPage {
         this.setupGrid();
     }
 
+    /*
+     * Met toutes les photos dans un tableau, 
+     *  suivant la disposition de l'appareil
+     */
     setupGrid() {
         let rowNum = 0;
         let rowSize = (this.plt.isPortrait()) ? 4 : 8;
         this.grid = [];
-        /*this.temp = this.photoService.getPictures();
+        this.temp = this.photoService.getPictures();
         for (let i = 0; i < this.temp.length; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
                 if (this.temp[i + j])
                     this.grid[rowNum][j] = this.temp[i + j];
             }
-
             rowNum++;
-        }*/
-        
+        }
+
         ///BrowserTests
-        for (let i = 0; i < 9; i += rowSize) {
+        /*for (let i = 0; i < 9; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
                 if(i+j <=9)
@@ -159,7 +165,7 @@ export class PhotoPage {
             }
 
             rowNum++;
-        }
+        }*/
     }
 
     getSquareSize() {
@@ -194,8 +200,13 @@ export class PhotoPage {
                 console.log("Share cancelled");
             })
     }
-    
+
     print(): void {
         console.log("print");
     }
+    
+    toMenu(): void {
+        this.navCtrl.push(this.menu);
+    }
+
 }

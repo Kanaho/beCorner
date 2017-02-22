@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 //Transition
-import {trigger, state, style, transition, animate, keyframes} from '@angular/core';
+import {trigger, state, style, transition, animate} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
 

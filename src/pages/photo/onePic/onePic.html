@@ -1,16 +1,41 @@
 <ion-header>
-    <ion-navbar>
-        <ion-title>Edit</ion-title>
+    <ion-navbar class="onePicHead" class="bar-positive" align-title="center">
+        <logoHead></logoHead>
+        <ion-title>{{title}}</ion-title>
         <ion-buttons end>
-            <button ion-button icon-only class="renderBlack" (click)="exit()">
-                <ion-icon name="exit"></ion-icon>
+            <button ion-button class="headIcon" (click)="exit()">
+                <ion-icon name="md-close"></ion-icon>
             </button>
-    </ion-buttons>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
-
-<ion-content padding>
-    <p>{{msg}}</p>
-    <button (click)="addFilter()">Filter</button>
-    <img [src]="pic" id='myImage'/>
+<ion-content>
+    <ion-grid class="gridComment">
+        <ion-row class="commentPic"
+            [style.height.px]="getSquareSize()"
+            [style.background-image]="getBackground()">
+            <ion-col bottom class="center">
+               <button ion-button icon-only class="commentButton">
+                    <ion-icon name="thumbs-up"> Like</ion-icon>
+                </button>
+            </ion-col>
+            <ion-col bottom class="center"> 
+                <button ion-button icon-only class="commentButton">
+                    <ion-icon name="chatbubbles"> Comment</ion-icon>
+                </button>
+            </ion-col >
+            <ion-col bottom class="center">
+                <button ion-button icon-only class="commentButton">
+                    <ion-icon name="print"> Print</ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <ion-list class="commentList">
+                    <ion-item>One Comment</ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

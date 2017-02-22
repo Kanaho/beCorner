@@ -1,2 +1,28 @@
+.onePicHead{
+    height: 50px !important;
+}
 
+.commentList{
+    padding-left: 20px;
+    padding-right: 20px;
+}
 
+.commentPic{
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position: center center;
+}
+
+.gridComment{
+    padding: 0px !important;
+}
+
+.commentButton{
+    font-size: 9px;
+    background-color: #fd3d4d !important;
+    border-radius: 50px;
+}
+
+.commentButton:active, .commentButton-on {
+    background-color: #ec3a49 !important;
+}

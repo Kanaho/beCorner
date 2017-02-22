@@ -9,7 +9,7 @@ import { HomePage} from '../pages/home/home';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { PhotoPage } from '../pages/photo/photo';
-import {EditPhoto} from '../pages/photo/editPhoto/editPhoto';
+import {OnePic} from '../pages/photo/onePic/onePic';
 import { TabsPage } from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
@@ -23,7 +23,7 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     AboutPage,
     ContactPage,
     PhotoPage,
-    EditPhoto,
+    OnePic,
     TabsPage,
     ConnectPage,
     SignPage
@@ -40,7 +40,7 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     AboutPage,
     ContactPage,
     PhotoPage,
-    EditPhoto,
+    OnePic,
     TabsPage,
     ConnectPage,
     SignPage

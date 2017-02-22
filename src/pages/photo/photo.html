@@ -1,43 +1,36 @@
 <ion-header>
     <ion-navbar>
-        <img src="img/logo.jpg"/>
-        <ion-title>Photos</ion-title>
+        <ion-buttons left>
+           <img src="img/logo.jpg"/> 
+        </ion-buttons>
+        <ion-title>Photo</ion-title>
         <ion-buttons end>
-            <button *ngIf="user.username == null" ion-button icon-only class="renderBlack"
-                    [navPush]="connectPage">
-                <ion-icon name="person-add"></ion-icon>
-            </button>
-            <button *ngIf="user.username" ion-button icon-only class="renderBlack"
-                    [navPush]="editPhoto">
-                <ion-icon name="send"></ion-icon>
+            <button ion-button icon-only class="renderBlack">
+                <ion-icon name="menu"></ion-icon>
             </button>
         </ion-buttons>
     </ion-navbar>
-    <div class='row'>
-        <div class="col-10 center">
-            <ion-input type="text" placeholder="Nom de mon album" class="albumName"></ion-input>
-        </div>
-    </div>
+    <input ion-input type="text" placeholder="Nom de mon album" class="albumName">
 </ion-header>
 
 <ion-content class="page">
     <div class="gallery-button" text-center>
-        <div>
+        <!--<div>
             <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
                 name="brush" [navPush]="editPhoto"></ion-icon> 
             <ion-icon class="ionTab" name="add" on-tap="openGallery()"></ion-icon>
             <ion-icon class="ionTab" name="share" on-tap="upload()"></ion-icon>
             <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
                 name="trash" on-tap="onDelete()"></ion-icon> 
-        </div>
+        </div>-->
         <!--<img 
             [src]="myImage" id='image'/>
         <button (click)="addFilter()">Filter</button>-->
         <div *ngIf="grid">
             <ion-grid>
                 <ion-row *ngFor="let row of grid">
-                    <ion-col *ngFor="let img of row">
-                         <img [src]="img" class="toDisplay" 
+                    <ion-col *ngFor="let img of row" width-25 class="picCol">
+                        <img ion-img [src]="img" class="toDisplay" 
                             [ngClass]="{selected: selected(img)}"
                             (click)="onSelect(img)" 
                             [style.width.px]="getSquareSize()" 
@@ -48,3 +41,30 @@
         </div>
     </div>
 </ion-content>
+
+<ion-footer class="footerBar">
+    <ion-grid>
+        <ion-row class="center">
+            <ion-col class="center">
+                <button ion-button icon-only class="footerButton" (click)="openGallery()">
+                    <ion-icon name="add"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col class="center">
+                <button ion-button icon-only class="footerButton" (click)="share()">
+                    <ion-icon name="share"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col class="center">
+                <button ion-button icon-only class="footerButton" (click)="onDelete()">
+                    <ion-icon name="trash"></ion-icon>
+                </button>
+            </ion-col>
+            <ion-col class="center">
+                <button ion-button icon-only class="footerButton" (click)="print()">
+                    <ion-icon name="print"></ion-icon>
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-footer>

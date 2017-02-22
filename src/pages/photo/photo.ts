@@ -8,7 +8,7 @@ import {Platform} from 'ionic-angular';
 import { canvas } from 'canvas';*/
 
 import {PhotoService} from './album/photo.service';
-import {EditPhoto} from './editPhoto/editPhoto';
+import {OnePic} from './onePic/onePic';
 import {ConnectPage} from '../connect/connect';
 import {User} from '../connect/user/user';
 
@@ -25,7 +25,8 @@ export class PhotoPage {
 
     private temp: string[];
     private grid: string[][];
-    editPhoto = EditPhoto;
+    private selectedMod: boolean = false;
+    editPhoto = OnePic;
     connectPage = ConnectPage;
 
     private myImage: string = "http://www.w3schools.com/images/w3schools_green.jpg";
@@ -116,12 +117,17 @@ export class PhotoPage {
     }
 
     onSelect(img: string): void {
-        if (this.selected(img)) {
-            this.photoService.unSelect(img);
-        } else {
-            this.photoService.onSelect(img);
+        if(this.selectedMod){
+            if (this.selected(img)) {
+                this.photoService.unSelect(img);
+            } else {
+                this.photoService.onSelect(img);
+            }
+        }else{
+            this.photoService.setSelected(img);
+            this.navCtrl.push(this.editPhoto, null, 
+                {animation: 'fade-transition', direction: 'forward'});
         }
-
     }
 
     onDelete(): void {
@@ -131,9 +137,9 @@ export class PhotoPage {
 
     setupGrid() {
         let rowNum = 0;
-        let rowSize = (this.plt.isPortrait()) ? 2 : 4;
+        let rowSize = (this.plt.isPortrait()) ? 4 : 8;
         this.grid = [];
-        this.temp = this.photoService.getPictures();
+        /*this.temp = this.photoService.getPictures();
         for (let i = 0; i < this.temp.length; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
@@ -142,12 +148,23 @@ export class PhotoPage {
             }
 
             rowNum++;
+        }*/
+        
+        ///BrowserTests
+        for (let i = 0; i < 9; i += rowSize) {
+            this.grid[rowNum] = [];
+            for (let j = 0; j < rowSize; j++) {
+                if(i+j <=9)
+                    this.grid[rowNum][j] = this.myImage;
+            }
+
+            rowNum++;
         }
     }
 
     getSquareSize() {
-        return(this.plt.isPortrait() ? window.innerWidth / 2
-            : window.innerWidth / 4);
+        return (this.plt.isPortrait() ? window.innerWidth / 4
+            : window.innerWidth / 8);
     }
 
     private addFilter() {
@@ -176,5 +193,9 @@ export class PhotoPage {
             }, () => {
                 console.log("Share cancelled");
             })
+    }
+    
+    print(): void {
+        console.log("print");
     }
 }

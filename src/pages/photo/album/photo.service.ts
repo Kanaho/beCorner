@@ -14,6 +14,10 @@ export class PhotoService{
         }
     }
     
+    setSelected(img: string): void{
+        this.selectedPic = img;
+    }
+    
     onSelect(img: string): void {
         this.selPic.push(img);
         this.selectedPic = img;

@@ -23,9 +23,29 @@ page-home {
 
 .albumName{
     position: relative;
-    text-align: center;
-    //width: 100%;
+    text-align: center !important;
+    width: 100%;
     font-size: 25px;
     border: none;
     padding-bottom: -15px;
+}
+
+.center{
+    text-align: center;
+}
+
+.footerButton{
+    background-color: #be093b;
+}
+
+.footerButton:active, .footerButton-on, .footerButton:focus {
+    background-color: #a70834;
+}
+
+.picCol{
+    padding: 1px !important;
+}
+
+.footerBar{
+    background-color: #FFFFFF;
 }

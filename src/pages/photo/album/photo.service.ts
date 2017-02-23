@@ -20,12 +20,16 @@ export class PhotoService{
     
     onSelect(img: string): void {
         this.selPic.push(img);
-        this.selectedPic = img;
+    }
+    
+    cleanSel(): void{
+        while (this.selPic.length >0){
+            this.selPic.pop();
+        }
     }
     
     unSelect(img: string): void{
         this.selPic.splice(this.selPic.indexOf(img),1);
-        if (this.selPic.length == 0) this.selectedPic = null;
     }
     
     onDelete(): void {

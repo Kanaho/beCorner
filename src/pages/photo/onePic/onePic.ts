@@ -1,7 +1,9 @@
 import {Component} from '@angular/core';
 
 import {PhotoService} from '../album/photo.service';
-import {NavController, NavParams} from 'ionic-angular';
+import {NavController, NavParams, PopoverController} from 'ionic-angular';
+
+import {CommentPop} from './comment/comment';
 
 declare var Caman;
 declare function require(name: string);
@@ -18,7 +20,8 @@ export class OnePic {
 
     constructor(private photoService: PhotoService,
         public navCtrl: NavController,
-        public params:NavParams) {
+        public params:NavParams,
+        public popoverCtrl: PopoverController) {
         
         this.pic = photoService.getSelected();
         this.title = params.get("title");
@@ -47,5 +50,17 @@ export class OnePic {
     
     getBackground(){
         return "url(" +this.pic+")";
+    }
+    
+    presentComment(){
+        let popover = this.popoverCtrl.create(CommentPop);
+        popover.present();
+        popover.onDidDismiss((comment) =>{
+            if(comment != null){
+                //Popover a retourné un commentaire
+                console.log('receive');
+            }
+            console.log(comment);
+        })
     }
 }

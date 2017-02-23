@@ -137,6 +137,13 @@ export class PhotoPage {
         this.photoService.onDelete();
         this.setupGrid();
     }
+    
+    setSelectMod(): void{
+        this.selectedMod = !this.selectedMod;
+        if (!this.selectedMod) this.photoService.cleanSel();
+        //BrowserTest 
+            this.setupGrid();
+    }
 
     /*
      * Met toutes les photos dans un tableau, 

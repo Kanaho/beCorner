@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar class="onePicHead" class="bar-positive" align-title="center">
+    <ion-navbar class="onePicHead" align-title="center">
         <logoHead></logoHead>
         <ion-title>{{title}}</ion-title>
         <ion-buttons end>
@@ -20,7 +20,7 @@
                 </button>
             </ion-col>
             <ion-col bottom class="center"> 
-                <button ion-button icon-only class="commentButton">
+                <button ion-button icon-only class="commentButton" (click)="presentComment()">
                     <ion-icon name="chatbubbles"> Comment</ion-icon>
                 </button>
             </ion-col >

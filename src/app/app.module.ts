@@ -11,6 +11,7 @@ import { ContactPage } from '../pages/contact/contact';
 import { PhotoPage } from '../pages/photo/photo';
 import {MenuPage} from '../pages/menu/menu';
 import {OnePic} from '../pages/photo/onePic/onePic';
+import {CommentPop} from '../pages/photo/onePic/comment/comment'
 import { TabsPage } from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
@@ -27,6 +28,7 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     PhotoPage,
     MenuPage,
     OnePic,
+    CommentPop,
     TabsPage,
     ConnectPage,
     SignPage,
@@ -46,6 +48,7 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     PhotoPage,
     MenuPage,
     OnePic,
+    CommentPop,
     TabsPage,
     ConnectPage,
     SignPage,

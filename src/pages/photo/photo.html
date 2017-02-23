@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar>
+    <ion-navbar hideBackButton>
         <logoHead></logoHead>
         <ion-title>Photo</ion-title>
         <ion-buttons end>
@@ -14,31 +14,29 @@
 
 <ion-content class="page">
     <div class="gallery-button" text-center>
-        <!--<div>
-            <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
-                name="brush" [navPush]="editPhoto"></ion-icon> 
-            <ion-icon class="ionTab" name="add" on-tap="openGallery()"></ion-icon>
-            <ion-icon class="ionTab" name="share" on-tap="upload()"></ion-icon>
-            <ion-icon *ngIf="photoService.getSelected()" class="ionTab" 
-                name="trash" on-tap="onDelete()"></ion-icon> 
-        </div>-->
-        <!--<img 
-            [src]="myImage" id='image'/>
-        <button (click)="addFilter()">Filter</button>-->
         <div *ngIf="grid">
             <ion-grid>
                 <ion-row *ngFor="let row of grid">
                     <ion-col *ngFor="let img of row" width-25 class="picCol">
-                        <img ion-img [src]="img" class="toDisplay" 
-                            [ngClass]="{selected: selected(img)}"
-                            (click)="onSelect(img)" 
+                        <div class="container" [ngClass]="{selected: selected(img)}" 
+                             (click)="onSelect(img)">
+                            <img ion-img [src]="img" class="toDisplay"
                             [style.width.px]="getSquareSize()" 
                             [style.height.px]="getSquareSize()"/>
+                            <div class="middle">
+                                <div class="selectedI">
+                                    <ion-icon name="md-checkmark" class="selIcon"></ion-icon>
+                                </div>
+                            </div>
+                        </div>
                     </ion-col>
                 </ion-row>
             </ion-grid>
         </div>
     </div>
+    <ion-fab *ngIf="selectedMod==true" right bottom>
+        <button ion-fab class="roundButton" icon-only (click)="onDelete()"><ion-icon class="trash" name="trash"></ion-icon></button>
+    </ion-fab>
 </ion-content>
 
 <ion-footer class="footerBar">
@@ -55,8 +53,8 @@
                 </button>
             </ion-col>
             <ion-col class="center">
-                <button ion-button icon-only class="footerButton" (click)="onDelete()">
-                    <ion-icon name="trash"></ion-icon>
+                <button ion-button icon-only class="footerButton" (click)="setSelectMod()">
+                    <ion-icon name="md-checkbox-outline"></ion-icon>
                 </button>
             </ion-col>
             <ion-col class="center">

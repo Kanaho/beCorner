@@ -58,9 +58,12 @@ export class OnePic {
         popover.onDidDismiss((comment) =>{
             if(comment != null){
                 //Popover a retourné un commentaire
-                console.log('receive');
             }
-            console.log(comment);
         })
+    }
+    
+    goRoot(): void {
+        console.log('toRoot');
+        this.navCtrl.popToRoot({animation: 'fade-transition', direction: 'forward'});
     }
 }

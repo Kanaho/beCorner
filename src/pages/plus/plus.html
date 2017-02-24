@@ -1,0 +1,83 @@
+<ion-content>
+    <ion-grid class='plusGrid'>
+        <ion-row class="plusHead">
+            <ion-col>
+                <div class='title'>beCorner Plus</div>
+                <div class='titleText'>Découvrez le meilleur de beCorner <br> à un tarif avantageux.</div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <div><b>Un meilleur partage</b></div>
+                <ion-list>
+                    <ion-item *ngFor="let adv of advantage" no-lines>
+                        <ion-icon name="md-checkmark"></ion-icon>
+                        {{adv}}
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col width-50>
+                <div>100 € <br>annuel</div>
+            </ion-col>
+            <ion-col width-50>
+                <div>10 € <br>mensuel</div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <div><b>Enregistrez-vous</b></div>
+                <ion-list no-lines>
+                    <ion-item>
+                        <ion-input placeholder="E-mail"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Mot de passe"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Confirmer mot de passe"></ion-input>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <div><b>Vos coordonnées de facturation</b></div>
+                <ion-list no-lines>
+                    <ion-item>
+                        <ion-input placeholder="Nom complet"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Société (facultatif)"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Adresse"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Ville"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Code postal"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="Pays"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input placeholder="TVA (facultatif)"></ion-input>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <input type='radio'/> J'accepte les <u><a>Termes et Conditions d'utilisation</a></u>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col>
+                <button ion-button>Valider</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

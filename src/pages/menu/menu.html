@@ -2,42 +2,45 @@
     <button ion-fab icon-only class="exit" (click)="goBack()" end>
         <ion-icon class="exit" name="md-close"></ion-icon>
     </button>
-    <ion-list class="menuList">
-        <ion-item class="menuItem" no-lines [style.padding-left.px]="getPadding()">
+    <ion-list class="menuList"  no-lines>
+        <ion-item class="menuItem" [style.padding-left.px]="getPadding()">
             <ion-icon name="md-add-circle" class="menuIcon"></ion-icon> 
             Nouveau
         </ion-item>
-        <ion-item class="menuItem" no-lines [style.padding-left.px]="getPadding()">
+        <ion-item class="menuItem"[style.padding-left.px]="getPadding()">
             <ion-icon name="book" class="menuIcon"></ion-icon> 
             Photo Book
         </ion-item>
-        <ion-item class="menuItem" no-lines [style.padding-left.px]="getPadding()">
+        <ion-item class="menuItem"[style.padding-left.px]="getPadding()">
             <ion-icon name="ios-settings-outline" class="menuIcon"></ion-icon> 
             Paramètres
         </ion-item>
-        <ion-item class="menuItem" no-lines [style.padding-left.px]="getPadding()">
+        <ion-item class="menuItem"[style.padding-left.px]="getPadding()">
             <ion-icon name="cart" class="menuIcon"></ion-icon> 
             Panier
         </ion-item>
-        <ion-item class="menuItem" no-lines [style.padding-left.px]="getPadding()">
+        <ion-item class="menuItem"[style.padding-left.px]="getPadding()">
             <ion-icon name="md-close-circle" class="menuIcon"></ion-icon> 
             Supprimer
         </ion-item>
-        <ion-item class="menuItem" no-lines></ion-item>
-        <ion-item class="menuItem" no-lines></ion-item>
-        <ion-item class="menuDispo" no-lines> 
+        <ion-item class="menuItem"></ion-item>
+        <ion-item class="menuItem"></ion-item>
+        <ion-item class="menuDispo"> 
             Disponibilité:
         </ion-item>
-        <ion-item class="dispoTime" no-lines> 
+        <ion-item class="dispoTime"> 
             {{heure}} h {{minute}} min restantes
         </ion-item>
-        <ion-item class="toPay" no-lines>
-            Plus ?
+        <ion-item class="toPay">
+                  <div (click)="goPlus()">Plus ?</div>
         </ion-item>
-        <ion-item class="menuItem" no-lines></ion-item>
-        <ion-item class="menuItem" no-lines></ion-item>
-        <ion-item class="menuItem" no-lines>
-            <img src="img/logo2.jpg" class="logoMenu"/>
+        <ion-item class="menuItem"></ion-item>
+        <ion-item class="menuItem"></ion-item>
+        <ion-item class="menuItem">
+            <img ion-img src="img/logo2.jpg" class="logoMenu"/>
+        </ion-item>
+        <ion-item class="copyright">
+            © beGallery 2017
         </ion-item>
     </ion-list>
 </ion-content>

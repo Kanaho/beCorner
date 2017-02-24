@@ -11,17 +11,21 @@
     text-align: right !important;
 }
 
-.menuItem, .menuDispo, .dispoTime, .toPay{
+.menuItem, .menuDispo, .dispoTime, .toPay, .copyright{
     background-color: transparent;
     font-size: 20px;
     color: #FFFFFF;
     margin-bottom: -5px !important;
 }
 
-.menuDispo, .dispoTime, .toPay, .logoMenu{
-    text-align: center;;
+.menuDispo, .dispoTime, .toPay, .logoMenu, .copyright{
+    text-align: center;
 }
 
+.logoMenu{
+    display: block;
+    margin: 0 auto;
+}
 .menuDispo{
     font-size: 30px;
 }
@@ -35,6 +39,10 @@
     font-weight: bold;
     font-size: 15px;
     text-decoration: underline;
+}
+
+.copyright{
+    font-size: 13px;
 }
 
 .menuIcon{

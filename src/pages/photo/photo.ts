@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
-import {Camera, ImagePicker, File, SocialSharing, ScreenOrientation} from 'ionic-native';
+import {ImagePicker, SocialSharing, ScreenOrientation} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
 /*import * as Caman from 'caman';
@@ -24,7 +24,6 @@ declare var cordova: any;
 
 export class PhotoPage {
 
-    private temp: string[];
     private grid: string[][];
     private selectedMod: boolean = false;
     private albumName: string;
@@ -39,81 +38,22 @@ export class PhotoPage {
         public plt: Platform,
         private photoService: PhotoService,
         private user: User) {
+        //ScreenOrientation.lockOrientation('portrait');
     }
 
     private openGallery(): void {
 
         let pickerOptions = {
-            sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-            destinationType: Camera.DestinationType.DATA_URL,
             quality: 100,
             maximumImagesCount: 10,
         }
 
         ImagePicker.getPictures(pickerOptions).then((results) => {
             this.photoService.addPictures(results);
-            //this.addPictures();
             this.setupGrid();
         },
             (err) => {});
-
-        /*let cameraOptions = {
-            sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-            destinationType: Camera.DestinationType.DATA_URL,
-            quality: 100,
-            targetWidth: 1000,
-            targetHeight: 1000,
-            encodingType: Camera.EncodingType.JPEG,
-            correctOrientation: true
-        }
-        
-        Camera.getPicture(cameraOptions).then(function(imageData){
-            
-            onImageSuccess(imageData);
-            
-            function onImageSuccess(fileURI){
-                createFileEntry(fileURI);
-            }
-            
-            function createFileEntry(fileURI){
-                File.resolveLocalFilesystemUrl(fileURI).then(function(fileEntry){
-                    copyFile(fileEntry);
-                }), fail();
-            }
-            
-            function copyFile(fileEntry){
-                let name = fileEntry.fullPath.substr(fileEntry.fullPath.lastIndexOf('/')+1);
-                let newName = makeid() + name;
-                
-                File.resolveLocalFilesystemUrl(cordova.file.dataDirectory)
-                    .then(function(fileSystem2){
-                        fileEntry.copyTo(
-                            fileSystem2,
-                            newName,
-                        ).then((copySucces) =>{
-                            console.log(copySucces)
-                        });
-                }), fail();
-            }
-            
-            function makeid(){
-                let text = "";
-                var possible = "ABCDEDJZIQMZIOPQMZQdzadadza1234567890";
-                
-                for(var i=0; i<5; i++){
-                    text += possible.charAt(Math.floor(Math.random() * possible.length));
-                }
-                return text;
-            }
-            function fail(){
-                console.log('fail');
-            }
-        });*/
     }
-
-    /*addPictures() {
-        this.photoService.addPictures(this.temp);
-    }*/
 
     selected(img: string): boolean {
         return this.photoService.getSel().indexOf(img) >= 0;
@@ -137,12 +77,12 @@ export class PhotoPage {
         this.photoService.onDelete();
         this.setupGrid();
     }
-    
-    setSelectMod(): void{
+
+    setSelectMod(): void {
         this.selectedMod = !this.selectedMod;
         if (!this.selectedMod) this.photoService.cleanSel();
         //BrowserTest 
-            this.setupGrid();
+        this.setupGrid();
     }
 
     /*
@@ -153,7 +93,7 @@ export class PhotoPage {
         let rowNum = 0;
         let rowSize = (this.plt.isPortrait()) ? 4 : 8;
         this.grid = [];
-        this.temp = this.photoService.getPictures();
+        /*this.temp = this.photoService.getPictures();
         for (let i = 0; i < this.temp.length; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
@@ -161,10 +101,10 @@ export class PhotoPage {
                     this.grid[rowNum][j] = this.temp[i + j];
             }
             rowNum++;
-        }
+        }*/
 
         ///BrowserTests
-        /*for (let i = 0; i < 9; i += rowSize) {
+        for (let i = 0; i < 9; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
                 if(i+j <=9)
@@ -172,7 +112,7 @@ export class PhotoPage {
             }
 
             rowNum++;
-        }*/
+        }
     }
 
     getSquareSize() {
@@ -211,9 +151,13 @@ export class PhotoPage {
     print(): void {
         console.log("print");
     }
-    
+
     toMenu(): void {
         this.navCtrl.push(this.menu);
     }
 
+    goRoot(): void {
+        console.log('toRoot');
+        this.navCtrl.popToRoot({animation: 'fade-transition', direction: 'forward'});
+    }
 }

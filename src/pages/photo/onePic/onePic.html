@@ -1,6 +1,8 @@
 <ion-header>
     <ion-navbar class="onePicHead" align-title="center">
-        <logoHead></logoHead>
+        <ion-buttons left>
+            <button class="styleLess"><img src="img/logo.jpg" (click)="goRoot()"/></button>
+        </ion-buttons>
         <ion-title>{{title}}</ion-title>
         <ion-buttons end>
             <button ion-button class="headIcon" (click)="exit()">
@@ -12,10 +14,10 @@
 <ion-content>
     <ion-grid class="gridComment">
         <ion-row class="commentPic"
-            [style.height.px]="getSquareSize()"
-            [style.background-image]="getBackground()">
+                 [style.height.px]="getSquareSize()"
+                 [style.background-image]="getBackground()">
             <ion-col bottom class="center">
-               <button ion-button icon-only class="commentButton">
+                <button ion-button icon-only class="commentButton">
                     <ion-icon name="thumbs-up"> Like</ion-icon>
                 </button>
             </ion-col>

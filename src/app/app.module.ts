@@ -2,7 +2,8 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { HttpModule, JsonpModule } from '@angular/http';
 
 import { IonicApp, IonicModule, IonicErrorHandler, Config } from 'ionic-angular';
-//import { NativeTransitions} from 'ionic-native-transitions';
+
+import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
 import { MyApp } from './app.component';
 import { HomePage} from '../pages/home/home';
@@ -15,9 +16,16 @@ import {CommentPop} from '../pages/photo/onePic/comment/comment'
 import { TabsPage } from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
+import {PlusPage} from '../pages/plus/plus';
 import {logoHeader} from '../pages/util/logoHeader';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
+
+const cloudSettings: CloudSettings = {
+  'core': {
+    'app_id': '9209E005'
+  }
+};
 
 @NgModule({
   declarations: [
@@ -32,12 +40,13 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     TabsPage,
     ConnectPage,
     SignPage,
+    PlusPage,
     logoHeader,
   ],
   imports: [
     IonicModule.forRoot(MyApp),
     HttpModule, JsonpModule,
-    //NativeTransitions
+    CloudModule.forRoot(cloudSettings)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -52,6 +61,7 @@ import {FadeTransition} from '../pages/transition/FadeTransition';
     TabsPage,
     ConnectPage,
     SignPage,
+    PlusPage,
     logoHeader,
   ],
   providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]

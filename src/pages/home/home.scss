@@ -1,17 +1,19 @@
-.addPic{
-    padding: 14px 24px;
-    background-color: #be093b;
-    border-radius: 8px;
-    color: #ffffff;
-    text-align: center !important;
-    font-size: 25px;
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 
+page-home{
+    .addPic{
+        padding: 14px 24px;
+        background-color: #be093b;
+        border-radius: 8px;
+        color: #ffffff;
+        text-align: center !important;
+        font-size: 25px;
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 
             0 6px 20px 0 rgba(0,0,0,0.19);
-}
+    }
 
-.homeHead{
-    padding-top: 10px;
-}
-.centerHDiv{
-    //text-align: center !important;
+    .homeHead{
+        padding-top: 10px;
+    }
+    .centerHDiv{
+        //text-align: center !important;
+    }   
 }

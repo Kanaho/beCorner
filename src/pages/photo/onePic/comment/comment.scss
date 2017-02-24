@@ -1,17 +1,19 @@
-.popoText{
-    height: 100px;
-    margin: 15px 0px 20px 0px;
-    width:auto;
-    //box-sizing: border-box;
-    resize: none;
-}
+commentPop{
+    .popoText{
+        height: 100px;
+        margin: 15px 0px 20px 0px;
+        width:auto;
+        //box-sizing: border-box;
+        resize: none;
+    }
 
-.popoContent{
-    width: auto !important;
-    height: 180px !important;
-    text-align: center;
-}
+    .popoContent{
+        width: auto !important;
+        height: 180px !important;
+        text-align: center;
+    }
 
-.button-group{
-    margin-top: -15px;
+    .button-group{
+        margin-top: -15px;
+    }    
 }

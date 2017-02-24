@@ -8,35 +8,37 @@
         </ion-row>
         <ion-row>
             <ion-col>
-                <div><b>Un meilleur partage</b></div>
-                <ion-list>
-                    <ion-item *ngFor="let adv of advantage" no-lines>
+                <div class='subTitle'><b>Un meilleur partage</b></div>
+                <ion-list no-lines>
+                    <ion-item *ngFor="let adv of advantage" class="advantage" [style.padding-left.px]="getPadding()">
                         <ion-icon name="md-checkmark"></ion-icon>
                         {{adv}}
                     </ion-item>
                 </ion-list>
             </ion-col>
         </ion-row>
-        <ion-row>
-            <ion-col width-50>
-                <div>100 € <br>annuel</div>
+        <ion-row class="price">
+            <ion-col width-50 center [ngClass]="{priceSel: annuel==true}" (click)="annuel = true">
+                     <div class="amount"><b>100 € </b></div>
+                <div>annuel</div>
             </ion-col>
-            <ion-col width-50>
-                <div>10 € <br>mensuel</div>
+            <ion-col width-50 [ngClass]="{priceSel: annuel==false}"(click)="annuel = false">
+                     <div class="amount"><b>10 € </b></div>
+                <div>mensuel</div>
             </ion-col>
         </ion-row>
         <ion-row>
             <ion-col>
-                <div><b>Enregistrez-vous</b></div>
+                <div class='subTitle'><b>Enregistrez-vous</b></div>
                 <ion-list no-lines>
                     <ion-item>
-                        <ion-input placeholder="E-mail"></ion-input>
+                        <ion-input type="text" placeholder="E-mail"></ion-input>
                     </ion-item>
                     <ion-item>
-                        <ion-input placeholder="Mot de passe"></ion-input>
+                        <ion-input type="password" placeholder="Mot de passe"></ion-input>
                     </ion-item>
                     <ion-item>
-                        <ion-input placeholder="Confirmer mot de passe"></ion-input>
+                        <ion-input type="password" placeholder="Confirmer mot de passe"></ion-input>
                     </ion-item>
                 </ion-list>
             </ion-col>

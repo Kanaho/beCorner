@@ -1,50 +1,53 @@
-.mainMenu{
-    background-color: #be093b;
+menuPage{
+    .mainMenu{
+        background-color: #be093b;
+    }
+
+    .exit{
+        background-color: transparent !important;
+        font-size: 50px !important;
+        box-shadow: none !important;
+        margin-right: -10px;
+        width: 100%;
+        text-align: right !important;
+    }
+
+    .menuItem, .menuDispo, .dispoTime, .toPay, .copyright{
+        background-color: transparent;
+        font-size: 20px;
+        color: #FFFFFF;
+        margin-bottom: -5px !important;
+    }
+
+    .menuDispo, .dispoTime, .toPay, .logoMenu, .copyright{
+        text-align: center;
+    }
+
+    .logoMenu{
+        display: block;
+        margin: 0 auto;
+    }
+    .menuDispo{
+        font-size: 30px;
+    }
+
+    .dispoTime{
+        font-size: 20px;
+        margin-top: -15px !important;
+    }
+
+    .toPay{
+        font-weight: bold;
+        font-size: 15px;
+        text-decoration: underline;
+    }
+
+    .copyright{
+        font-size: 13px;
+    }
+
+    .menuIcon{
+        padding-right: 15px;
+    }
 }
 
-.exit{
-    background-color: transparent !important;
-    font-size: 50px !important;
-    box-shadow: none !important;
-    margin-right: -10px;
-    width: 100%;
-    text-align: right !important;
-}
-
-.menuItem, .menuDispo, .dispoTime, .toPay, .copyright{
-    background-color: transparent;
-    font-size: 20px;
-    color: #FFFFFF;
-    margin-bottom: -5px !important;
-}
-
-.menuDispo, .dispoTime, .toPay, .logoMenu, .copyright{
-    text-align: center;
-}
-
-.logoMenu{
-    display: block;
-    margin: 0 auto;
-}
-.menuDispo{
-    font-size: 30px;
-}
-
-.dispoTime{
-    font-size: 20px;
-    margin-top: -15px !important;
-}
-
-.toPay{
-    font-weight: bold;
-    font-size: 15px;
-    text-decoration: underline;
-}
-
-.copyright{
-    font-size: 13px;
-}
-
-.menuIcon{
-    padding-right: 15px;
-}

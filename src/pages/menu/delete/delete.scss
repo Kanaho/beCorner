@@ -1,0 +1,28 @@
+deletePop{
+    .popoContent{
+        text-align: center;
+        background-color: #be093b;
+        color: #FFFFFF;
+    }
+    
+    .popoHeader{
+        font-size: 25px;
+        padding: 15px;
+    }
+    
+    .popoText{
+        padding-bottom: 15px;
+    }
+    
+    .popoButton{
+        color: #be093b !important;
+        font-weight: bold;
+        height: 40px;
+        background-color: #FFFFFF;
+        border-radius: 20%
+    }
+    
+    .button-group{
+        padding-bottom: 15px;
+    }
+}

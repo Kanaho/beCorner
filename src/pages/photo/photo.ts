@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 
-import {NavController} from 'ionic-angular';
+import {NavController, NavParams} from 'ionic-angular';
 import {ImagePicker, SocialSharing, ScreenOrientation} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
@@ -23,7 +23,8 @@ declare var cordova: any;
 
 
 export class PhotoPage {
-
+    private albumId: string;
+    private temp: string[] = [];
     private grid: string[][];
     private selectedMod: boolean = false;
     private albumName: string;
@@ -35,10 +36,12 @@ export class PhotoPage {
 
     constructor(
         public navCtrl: NavController,
+        private params: NavParams,
         public plt: Platform,
         private photoService: PhotoService,
         private user: User) {
         //ScreenOrientation.lockOrientation('portrait');
+        this.albumId = params.get('albumId');
     }
 
     private openGallery(): void {
@@ -93,7 +96,7 @@ export class PhotoPage {
         let rowNum = 0;
         let rowSize = (this.plt.isPortrait()) ? 4 : 8;
         this.grid = [];
-        /*this.temp = this.photoService.getPictures();
+        this.temp = this.photoService.getPictures();
         for (let i = 0; i < this.temp.length; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
@@ -101,10 +104,10 @@ export class PhotoPage {
                     this.grid[rowNum][j] = this.temp[i + j];
             }
             rowNum++;
-        }*/
+        }
 
         ///BrowserTests
-        for (let i = 0; i < 9; i += rowSize) {
+        /*for (let i = 0; i < 9; i += rowSize) {
             this.grid[rowNum] = [];
             for (let j = 0; j < rowSize; j++) {
                 if(i+j <=9)
@@ -112,7 +115,7 @@ export class PhotoPage {
             }
 
             rowNum++;
-        }
+        }*/
     }
 
     getSquareSize() {
@@ -140,8 +143,8 @@ export class PhotoPage {
         })
     }
     upload(): void {
-        SocialSharing.share("Envoyé depuis BeCorner", null,
-            this.photoService.getSel(), null).then(() => {
+        SocialSharing.share("Regarde moi cet album : beCorner://home", null,
+            null, null).then(() => {
                 console.log("Share done");
             }, () => {
                 console.log("Share cancelled");

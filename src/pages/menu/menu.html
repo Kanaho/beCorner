@@ -20,8 +20,8 @@
             Panier
         </ion-item>
         <ion-item class="menuItem"[style.padding-left.px]="getPadding()">
-            <ion-icon name="md-close-circle" class="menuIcon"></ion-icon> 
-            Supprimer
+            <div (click)="deleteAlbum()"><ion-icon name="md-close-circle" class="menuIcon"></ion-icon> 
+                Supprimer</div>
         </ion-item>
         <ion-item class="menuItem"></ion-item>
         <ion-item class="menuItem"></ion-item>

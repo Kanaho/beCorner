@@ -7,8 +7,8 @@ import {Platform} from 'ionic-angular';
 /*import * as Caman from 'caman';
 import { canvas } from 'canvas';*/
 
-import {PhotoService} from './album/photo.service';
-import {OnePic} from './onePic/onePic';
+import {PhotoService} from '../util/photo.service';
+import {OnePic} from '../onePic/onePic';
 import {MenuPage} from '../menu/menu';
 import {ConnectPage} from '../connect/connect';
 import {User} from '../connect/user/user';
@@ -27,6 +27,7 @@ export class PhotoPage {
     private temp: string[] = [];
     private grid: string[][];
     private selectedMod: boolean = false;
+    private state: string;
     private albumName: string;
     onePhoto = OnePic;
     menu = MenuPage;
@@ -49,8 +50,9 @@ export class PhotoPage {
         let pickerOptions = {
             quality: 100,
             maximumImagesCount: 10,
+            outputType: 0
         }
-
+        
         ImagePicker.getPictures(pickerOptions).then((results) => {
             this.photoService.addPictures(results);
             this.setupGrid();
@@ -82,10 +84,22 @@ export class PhotoPage {
     }
 
     setSelectMod(): void {
-        this.selectedMod = !this.selectedMod;
-        if (!this.selectedMod) this.photoService.cleanSel();
-        //BrowserTest 
-        this.setupGrid();
+        if (this.state == null || this.state == "select") {
+            this.selectedMod = !this.selectedMod;
+            if (!this.selectedMod) this.photoService.cleanSel();
+            this.setState("select");
+            //BrowserTest 
+            this.setupGrid();
+        }
+
+    }
+
+    setState(st: string) {
+        if (this.state != null) {
+            this.state = null;
+        } else {
+            this.state = st;
+        }
     }
 
     /*
@@ -152,7 +166,11 @@ export class PhotoPage {
     }
 
     print(): void {
-        console.log("print");
+        if (this.state == null || this.state == "print") {
+            console.log("print");
+            this.setState("print");
+        }
+
     }
 
     toMenu(): void {

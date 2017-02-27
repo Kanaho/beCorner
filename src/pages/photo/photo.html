@@ -14,7 +14,7 @@
            class="albumName" [(ngModel)]="albumName">
 </ion-header>
 
-<ion-content class="page">
+<ion-content class="page" [ngClass]="{miniature: state=='print'}">
     <div class="gallery-button" text-center>
         <div *ngIf="grid">
             <ion-grid>
@@ -25,6 +25,7 @@
                             <img ion-img [src]="img" class="toDisplay"
                             [style.width.px]="getSquareSize()" 
                             [style.height.px]="getSquareSize()"/>
+                            <p>img</p><p>{{img}}</p>
                             <div class="middle">
                                 <div class="selectedI">
                                     <ion-icon name="md-checkmark" class="selIcon"></ion-icon>
@@ -40,27 +41,32 @@
         <button ion-fab class="roundButton" icon-only (click)="onDelete()"><ion-icon class="trash" name="trash"></ion-icon></button>
     </ion-fab>
 </ion-content>
+<print-info *ngIf="state=='print'"></print-info>
 
 <ion-footer class="footerBar">
     <ion-grid>
         <ion-row>
             <ion-col class="center">
-                <button ion-button icon-only class="footerButton" (click)="openGallery()">
+                <button ion-button icon-only class="footerButton" (click)="openGallery()"
+                        [ngClass]="{disable: state!=null}">
                     <ion-icon name="add"></ion-icon>
                 </button>
             </ion-col>
             <ion-col class="center">
-                <button ion-button icon-only class="footerButton" (click)="upload()">
+                <button ion-button icon-only class="footerButton" (click)="upload()"
+                        [ngClass]="{disable: state!=null}">
                     <ion-icon name="share"></ion-icon>
                 </button>
             </ion-col>
             <ion-col class="center">
-                <button ion-button icon-only class="footerButton" (click)="setSelectMod()">
+                <button ion-button icon-only class="footerButton" (click)="setSelectMod()"
+                        [ngClass]="{disable: state!='select' && state!=null}">
                     <ion-icon name="md-checkbox-outline"></ion-icon>
                 </button>
             </ion-col>
             <ion-col class="center">
-                <button ion-button icon-only class="footerButton" (click)="print()">
+                <button ion-button icon-only class="footerButton" (click)="print()"
+                        [ngClass]="{disable: state!='print' && state!=null}">
                     <ion-icon name="print"></ion-icon>
                 </button>
             </ion-col>

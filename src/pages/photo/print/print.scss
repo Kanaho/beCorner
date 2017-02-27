@@ -1,0 +1,29 @@
+print-info{
+    .print{
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        border-bottom: 2px solid #a30934;
+    }
+    
+    .btFormat{
+        color: #be093b !important;
+        background-color: #FFFFFF !important;
+        border: 2px solid #be093b !important;
+        border-radius: 8px;
+        font-size: 20px;
+        font-weight: bold;
+        width: 115px;
+    }
+    
+    .choose{
+        color: #FFFFFF !important;
+        background-color: #be093b !important;
+    }
+    
+    .btAdd{
+        font-weight: bold;
+        font-size: 20px;
+        background-color: #be093b !important;
+    }
+}

@@ -3,7 +3,7 @@ import { Platform, Nav } from 'ionic-angular';
 import { StatusBar, Splashscreen, Deeplinks} from 'ionic-native';
 
 import { HomePage } from '../pages/home/home';
-import {PhotoService} from '../pages/photo/album/photo.service';
+import {PhotoService} from '../pages/util/photo.service';
 import {User} from '../pages/connect/user/user';
 import {PhotoPage} from '../pages/photo/photo';
 

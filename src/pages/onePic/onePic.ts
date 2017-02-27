@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 
-import {PhotoService} from '../album/photo.service';
+import {PhotoService} from '../util/photo.service';
 import {NavController, NavParams, PopoverController} from 'ionic-angular';
 
 import {CommentPop} from './comment/comment';

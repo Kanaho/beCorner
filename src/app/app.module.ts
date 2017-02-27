@@ -10,10 +10,11 @@ import {HomePage} from '../pages/home/home';
 import {AboutPage} from '../pages/about/about';
 import {ContactPage} from '../pages/contact/contact';
 import {PhotoPage} from '../pages/photo/photo';
+import {PrintInfo} from '../pages/photo/print/print';
 import {MenuPage} from '../pages/menu/menu';
 import {DeletePop} from '../pages/menu/delete/delete';
-import {OnePic} from '../pages/photo/onePic/onePic';
-import {CommentPop} from '../pages/photo/onePic/comment/comment'
+import {OnePic} from '../pages/onePic/onePic';
+import {CommentPop} from '../pages/onePic/comment/comment'
 import {TabsPage} from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
@@ -35,6 +36,7 @@ const cloudSettings: CloudSettings = {
         AboutPage,
         ContactPage,
         PhotoPage,
+        PrintInfo,
         MenuPage,
         DeletePop,
         OnePic,
@@ -57,6 +59,7 @@ const cloudSettings: CloudSettings = {
         AboutPage,
         ContactPage,
         PhotoPage,
+        PrintInfo,
         MenuPage,
         DeletePop,
         OnePic,

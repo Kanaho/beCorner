@@ -6,6 +6,7 @@ import {trigger, state, style, transition, animate} from '@angular/core';
 import {NavController} from 'ionic-angular';
 
 import {PhotoPage} from '../photo/photo';
+import {ConnectPage} from '../connect/connect';
 
 @Component({
     selector: 'page-home',
@@ -39,5 +40,9 @@ export class HomePage {
             }, 800);
         }, 850);
         this.flipState = 'flipped';
+    }
+    
+    connect(){
+        this.navCtrl.push(ConnectPage);
     }
 }

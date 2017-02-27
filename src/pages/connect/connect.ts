@@ -70,8 +70,8 @@ export class ConnectPage {
 
             Facebook.login(permissions).then(() => {
                 alert('succed');
-            }, (msg) => {
-                alert("Ready " + msg);
+            }, function(error){
+                alert("Fail: " + error);
             })
         }, (msg) =>{
             alert(msg);

@@ -1,0 +1,19 @@
+<ion-content class="print"
+             [style.height.px]=getHeight()>
+    <h1>Choisissez votre format</h1>
+    <ion-grid class="gridFormat" >
+        <ion-row *ngFor="let row of grid">
+            <ion-col *ngFor="let form of row">
+                <button ion-button class="btFormat" (click)="onSelect(form)"
+                        [ngClass]="{choose: selected==form}">
+                    {{form}}
+                </button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+    <button ion-button class="btAdd" (click)="addToCart()"
+            [ngClass]="{disable: selected==null}">
+        <ion-icon name="cart" style="padding-right: 15px"></ion-icon> 
+        Ajouter au panier
+    </button>
+</ion-content>

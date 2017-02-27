@@ -45,7 +45,8 @@ export class MenuPage {
         popover.present();
         popover.onDidDismiss((choice: boolean) =>{
             if(choice){
-                console.log('Album supprimé')
+                console.log('Album supprimé');
+                this.navCtrl.pop();
             }
         })
     }

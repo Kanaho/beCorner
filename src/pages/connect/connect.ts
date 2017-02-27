@@ -66,15 +66,19 @@ export class ConnectPage {
     facebookLogin() {
         this.plt.ready().then(function () {
             let permissions = new Array();
-            permissions = ["public_profile"];
+            permissions = ["public_profile", "user_photos"];
 
-            Facebook.login(permissions).then(() => {
-                alert('succed');
+            Facebook.login(permissions).then((response) => {
+                alert(response.authResponse.userID + '\n' + response.authResponse.accessToken);
             }, function(error){
                 alert("Fail: " + error);
             })
         }, (msg) =>{
             alert(msg);
         })
+    }
+    
+    facebookLogOut(){
+        Facebook.logout();
     }
 }

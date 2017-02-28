@@ -19,7 +19,7 @@ import {TabsPage} from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
 import {PlusPage} from '../pages/plus/plus';
-import {logoHeader} from '../pages/util/logoHeader';
+import {testSocket} from '../pages/testSocket/testSocket';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
 
@@ -45,7 +45,7 @@ const cloudSettings: CloudSettings = {
         ConnectPage,
         SignPage,
         PlusPage,
-        logoHeader,
+        testSocket,
     ],
     imports: [
         IonicModule.forRoot(MyApp),
@@ -68,7 +68,7 @@ const cloudSettings: CloudSettings = {
         ConnectPage,
         SignPage,
         PlusPage,
-        logoHeader,
+        testSocket,
     ],
     providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

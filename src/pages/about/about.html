@@ -7,8 +7,7 @@
 </ion-header>
 
 <ion-content padding>
-<h1>Wikipedia Demo</h1>
-    <p>Search after each keystroke</p>
+<h1>Wikipedia</h1>
     <input #term (keyup)="search(term.value)"/>
     <ul>
       <li *ngFor="let item of items | async">{{item}}</li>

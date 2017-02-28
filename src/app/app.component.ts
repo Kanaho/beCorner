@@ -4,19 +4,22 @@ import { StatusBar, Splashscreen, Deeplinks} from 'ionic-native';
 
 import { HomePage } from '../pages/home/home';
 import {PhotoService} from '../pages/util/photo.service';
+import {SocketService} from '../pages/util/socket.service';
+import {ServerService} from '../pages/util/server.service';
+import {StorageService} from '../pages/util/storage.service';
 import {User} from '../pages/connect/user/user';
 import {PhotoPage} from '../pages/photo/photo';
 
 
 @Component({
   templateUrl: 'app.html',
-  providers: [PhotoService, User]
+  providers: [PhotoService, User, SocketService, ServerService, StorageService]
 })
 export class MyApp {
   rootPage = HomePage;
   @ViewChild(Nav) navChild:Nav;
 
-  constructor(platform: Platform) {
+  constructor(platform: Platform, public socket: SocketService) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
@@ -29,7 +32,12 @@ export class MyApp {
           console.log('Successfully routed', match);
       }, (nomatch) =>{
           console.log('Routing failed', nomatch);
-      })
+      });
+      
+      /*this.socket.initialize();
+      this.socket.socketService.subscribe(event =>{
+          console.log('received from serveur...', event);
+      })*/
     });
   }
 }

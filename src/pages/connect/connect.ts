@@ -6,6 +6,10 @@ import {User} from './user/user';
 import {SignPage} from '../connect/sign/sign';
 import {GooglePlus, Facebook} from 'ionic-native';
 
+import {ServerService} from '../util/server.service';
+import {StorageService} from '../util/storage.service';
+import { Observable }       from 'rxjs/Observable';
+
 @Component({
     selector: 'connect',
     templateUrl: 'connect.html'
@@ -15,12 +19,14 @@ export class ConnectPage {
     private username: string;
     private password: string;
     signPage = SignPage;
-    FB_APP_ID: number = 1851028381838808;
+    FB_APP_ID: number = 952935814738643;
 
     constructor(public navCtrl: NavController,
         private alertCtrl: AlertController,
         public plt: Platform,
-        private user: User) {
+        private user: User,
+        private serverService: ServerService,
+        private storageService: StorageService) {
         Facebook.browserInit(this.FB_APP_ID, "v2.8");
     };
 
@@ -64,21 +70,33 @@ export class ConnectPage {
     }
 
     facebookLogin() {
-        this.plt.ready().then(function () {
-            let permissions = new Array();
-            permissions = ["public_profile", "user_photos"];
+        let permissions = new Array();
+        permissions = ["public_profile", "user_photos"];
 
-            Facebook.login(permissions).then((response) => {
-                alert(response.authResponse.userID + '\n' + response.authResponse.accessToken);
-            }, function(error){
+        Facebook.login(permissions).then((response) => {
+            console.log(response.authResponse.accessToken);
+            this.connectServer(response.authResponse.accessToken, 
+                response.authResponse.userID);
+        },
+            function (error) {
                 alert("Fail: " + error);
-            })
-        }, (msg) =>{
-            alert(msg);
-        })
+            });
     }
-    
-    facebookLogOut(){
+
+    connectServer(token: string, id: string) {
+        this.serverService.connect(token, id).subscribe(
+            (response) => {
+                let jsonString = JSON.stringify(response);
+                let jsonObject = JSON.parse(jsonString);
+                this.user.token = jsonObject.token;
+                this.storageService.storeUser(this.user.token);
+            });
+    }
+
+    facebookLogOut() {
         Facebook.logout();
+        this.user = new User();
+        this.storageService.delUser();
+        alert("Logged out");
     }
 }

@@ -17,11 +17,23 @@ export class ServerService{
         params.set('id', id);
         if(mail != null) params.set('mail', mail);
         
-        console.log('request ready');
+        return (this.request(serveurUrl, params));
+            
+    }
+    
+    requestAlbums(token: string): Observable<string[]>{
         
+        let serveurUrl = '..?';
+        
+        let params = new URLSearchParams();
+        params.set('token', token);
+        
+        return (this.request(serveurUrl, params));
+    }
+    
+    private request(serveurUrl: string, params: URLSearchParams){
         return this.http
             .get(serveurUrl, {search: params})
             .map(response => <string[]> response.json());
-            
     }
 }

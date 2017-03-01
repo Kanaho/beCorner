@@ -25,7 +25,6 @@
                             <img ion-img [src]="img" class="toDisplay"
                             [style.width.px]="getSquareSize()" 
                             [style.height.px]="getSquareSize()"/>
-                            <p>img</p><p>{{img}}</p>
                             <div class="middle">
                                 <div class="selectedI">
                                     <ion-icon name="md-checkmark" class="selIcon"></ion-icon>
@@ -38,7 +37,7 @@
         </div>
     </div>
     <ion-fab *ngIf="selectedMod==true" right bottom>
-        <button ion-fab class="roundButton" icon-only (click)="onDelete()"><ion-icon class="trash" name="trash"></ion-icon></button>
+        <button ion-fab mini (click)="onDelete()"><ion-icon name="trash"></ion-icon></button>
     </ion-fab>
 </ion-content>
 <print-info *ngIf="state=='print'"></print-info>

@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 
 import {NavController, AlertController} from 'ionic-angular';
 
-import {User} from '../user/user'
+import {User} from '../../util/user'
 
 @Component({
     selector: 'signPage',

@@ -5,11 +5,12 @@ import {trigger, state, style, transition, animate} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
 
-import {PhotoPage} from '../photo/photo';
+import {AlbumPage} from '../album/album';
 import {ConnectPage} from '../connect/connect';
 import {testSocket} from '../testSocket/testSocket';
 import {AboutPage} from '../about/about';
 import {StorageService} from '../util/storage.service';
+import {User} from '../util/user';
 
 @Component({
     selector: 'page-home',
@@ -21,16 +22,18 @@ import {StorageService} from '../util/storage.service';
             })),
             transition('* => flipped', animate('1600ms ease'))
         ])
-    ]
+    ],
+    providers: [ConnectPage]
 })
 
 export class HomePage {
-    photoPage = PhotoPage;
+    albumPage = AlbumPage;
+    connectPage = ConnectPage;
     flipState: String = 'notFlipped';
-    private token: string;
 
     constructor(public navCtrl: NavController,
-    private storageService: StorageService) {}
+        private storageService: StorageService,
+        private user: User) {}
 
     getPaddingTop() {
         return (window.innerHeight / 100) * 25;
@@ -38,28 +41,39 @@ export class HomePage {
 
     toPictures() {
         setTimeout(() => {
-            //this.navCtrl.push(this.photoPage);
-            this.navCtrl.push(this.photoPage, null, {animation: 'fade-transition', direction: 'forward'});
+            this.navCtrl.push(this.albumPage, null, {animation: 'fade-transition', direction: 'forward'});
             setTimeout(() => {
                 this.flipState = 'notFlipped';
             }, 800);
         }, 850);
         this.flipState = 'flipped';
     }
-    
-    connect(){
-        this.navCtrl.push(ConnectPage);
+
+    connect() {
+        this.navCtrl.push(this.connectPage);
     }
-    
-    socket(){
+
+    socket() {
         this.navCtrl.push(testSocket);
     }
-    
-    request(){
+
+    request() {
         this.navCtrl.push(AboutPage);
     }
-    
-    ionWillEnter(){
-        console.log(this.storageService.getToken());
+
+    ionViewDidEnter() {
+        /*
+         * Regarde si la session est déjà active ou pas, et si non, charge le
+         * token de l'utilisateur depuis les données persistantes
+         */
+        if (!this.user.token) {
+            this.storageService.getToken().then((token) => {
+                console.log("Token : " + token);
+                this.user.token = token;
+            }, (err) => {
+                console.log("not logged in");
+            });
+        }
+
     }
 }

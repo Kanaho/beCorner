@@ -7,7 +7,7 @@ import {PhotoService} from '../pages/util/photo.service';
 import {SocketService} from '../pages/util/socket.service';
 import {ServerService} from '../pages/util/server.service';
 import {StorageService} from '../pages/util/storage.service';
-import {User} from '../pages/connect/user/user';
+import {User} from '../pages/util/user';
 import {PhotoPage} from '../pages/photo/photo';
 
 

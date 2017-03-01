@@ -1,7 +1,7 @@
 print-info{
     .print{
         position: absolute;
-        text-align: center;
+        text-align: center !important;
         top: 50%;
         border-bottom: 2px solid #a30934;
     }
@@ -13,7 +13,7 @@ print-info{
         border-radius: 8px;
         font-size: 20px;
         font-weight: bold;
-        width: 115px;
+        width: 125px;
     }
     
     .choose{

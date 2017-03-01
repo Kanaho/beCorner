@@ -63,7 +63,6 @@ export class OnePic {
     }
     
     goRoot(): void {
-        console.log('toRoot');
         this.navCtrl.popToRoot({animation: 'fade-transition', direction: 'forward'});
     }
 }

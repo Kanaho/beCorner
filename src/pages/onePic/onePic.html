@@ -16,18 +16,18 @@
         <ion-row class="commentPic"
                  [style.height.px]="getSquareSize()"
                  [style.background-image]="getBackground()">
-            <ion-col bottom class="center">
+            <ion-col left bottom>
                 <button ion-button icon-only class="commentButton">
                     <ion-icon name="thumbs-up"> Like</ion-icon>
                 </button>
             </ion-col>
-            <ion-col bottom class="center"> 
+            <ion-col bottom> 
                 <button ion-button icon-only class="commentButton" (click)="presentComment()">
                     <ion-icon name="chatbubbles"> Comment</ion-icon>
                 </button>
-            </ion-col >
-            <ion-col bottom class="center">
-                <button ion-button icon-only class="commentButton">
+            </ion-col>
+            <ion-col bottom>
+                <button ion-button icon-only class="commentButton right">
                     <ion-icon name="print"> Print</ion-icon>
                 </button>
             </ion-col>

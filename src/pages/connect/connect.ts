@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 
 import {NavController, AlertController, Platform} from 'ionic-angular';
 
-import {User} from './user/user';
+import {User} from '../util/user';
 import {SignPage} from '../connect/sign/sign';
 import {GooglePlus, Facebook} from 'ionic-native';
 
@@ -16,8 +16,8 @@ import { Observable }       from 'rxjs/Observable';
 })
 
 export class ConnectPage {
-    private username: string;
-    private password: string;
+    private username: string ="";
+    private password: string ="";
     signPage = SignPage;
     FB_APP_ID: number = 952935814738643;
 
@@ -27,7 +27,11 @@ export class ConnectPage {
         private user: User,
         private serverService: ServerService,
         private storageService: StorageService) {
-        Facebook.browserInit(this.FB_APP_ID, "v2.8");
+        Facebook.browserInit(this.FB_APP_ID, "v2.8").then((msg) => {
+            console.log("Succeed :" + msg);
+        }, (err) => {
+            console.log("Error :" + err);
+        });
     };
 
     logIn(): void {
@@ -95,7 +99,7 @@ export class ConnectPage {
 
     facebookLogOut() {
         Facebook.logout();
-        this.user = new User();
+        this.user.token = null;
         this.storageService.delUser();
         alert("Logged out");
     }

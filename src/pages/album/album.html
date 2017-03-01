@@ -1,0 +1,51 @@
+<ion-header>
+    <ion-navbar class="onePicHead" align-title="center">
+        <ion-buttons left>
+            <button class="styleLess"><img src="img/logo.jpg" (click)="goRoot()"/></button>
+        </ion-buttons>
+        <ion-title>Albums</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+    <ion-item-group>
+        <ion-item-divider color="light">
+            New
+        </ion-item-divider>
+        <button ion-item (click)='newAlbum()'>
+            <ion-icon name="add"></ion-icon> Nouvel Album
+        </button>
+    </ion-item-group>
+
+    <ion-item-group>
+        <ion-item-divider color="light">
+            Mes Albums
+            <div (click)="switchMine()" class="dividerIcon">
+                <ion-icon *ngIf="showMine==false" name="eye-off" ></ion-icon>
+                <ion-icon *ngIf="showMine==true" name="eye"></ion-icon>
+            </div>
+        </ion-item-divider>
+        <div *ngIf="showMine==true">
+             <button ion-item *ngFor="let alb of myAlbums" (click)='goToPic(alb)'>
+                {{alb.title}}
+            </button>
+    </div>
+</ion-item-group>
+
+<ion-item-group>
+    <ion-item-divider color="light">
+        Albums partagé
+        <div (click)="switchShared()" class="dividerIcon">
+            <ion-icon *ngIf="showShared==false" name="eye-off" ></ion-icon>
+            <ion-icon *ngIf="showShared==true" name="eye"></ion-icon>
+        </div>
+    </ion-item-divider>
+    <div *ngIf="showShared==true">
+        <button ion-item lines>
+            ...
+        </button>
+    </div>
+</ion-item-group>
+
+</ion-content>

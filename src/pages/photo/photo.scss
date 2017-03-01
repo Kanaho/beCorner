@@ -70,7 +70,7 @@ photo-home {
         text-align: center;
     }
 
-    .footerButton, .roundButton{
+    .footerButton, .fab[mini]{
         background-color: #be093b !important;
     }
 
@@ -93,9 +93,5 @@ photo-home {
         border-radius: 80%;
         padding: 12px 0px;
     }
-    .trash{
-        font-size: 40px !important;
-    }
-
 }
 

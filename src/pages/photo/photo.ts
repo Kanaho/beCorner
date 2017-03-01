@@ -11,7 +11,7 @@ import {PhotoService} from '../util/photo.service';
 import {OnePic} from '../onePic/onePic';
 import {MenuPage} from '../menu/menu';
 import {ConnectPage} from '../connect/connect';
-import {User} from '../connect/user/user';
+import {User} from '../util/user';
 
 declare var Caman: any;
 declare var cordova: any;
@@ -41,8 +41,9 @@ export class PhotoPage {
         public plt: Platform,
         private photoService: PhotoService,
         private user: User) {
-        //ScreenOrientation.lockOrientation('portrait');
         this.albumId = params.get('albumId');
+        this.albumName = params.get('albumTitle');
+        console.log(this.albumId);
     }
 
     private openGallery(): void {
@@ -178,7 +179,6 @@ export class PhotoPage {
     }
 
     goRoot(): void {
-        console.log('toRoot');
         this.navCtrl.popToRoot({animation: 'fade-transition', direction: 'forward'});
     }
 }

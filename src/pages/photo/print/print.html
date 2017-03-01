@@ -4,10 +4,12 @@
     <ion-grid class="gridFormat" >
         <ion-row *ngFor="let row of grid">
             <ion-col *ngFor="let form of row">
-                <button ion-button class="btFormat" (click)="onSelect(form)"
-                        [ngClass]="{choose: selected==form}">
-                    {{form}}
-                </button>
+                <div text-center>
+                    <button ion-button class="btFormat" (click)="onSelect(form)"
+                            [ngClass]="{choose: selected==form}">
+                        {{form}}
+                    </button>
+                </div>
             </ion-col>
         </ion-row>
     </ion-grid>

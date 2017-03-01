@@ -7,7 +7,9 @@ export class StorageService{
     constructor(){}
     
     storeUser(token: string){
-        NativeStorage.setItem('myuser', {token: token});
+        NativeStorage.setItem("myuser", {token: token}).then((user) =>{
+            console.log(user.token);
+        });
     }
     
     delUser(){
@@ -15,8 +17,10 @@ export class StorageService{
     }
     
     getToken(){
-        NativeStorage.getItem('myuser').then((user) =>{
-            return user.token;
+        return NativeStorage.getItem('myuser').then((user) =>{
+            return Promise.resolve(user.token);
+        }, (err) =>{
+            return Promise.reject("User not registered");
         })
     }
 }

@@ -19,6 +19,7 @@ import {TabsPage} from '../pages/tabs/tabs';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
 import {PlusPage} from '../pages/plus/plus';
+import {AlbumPage} from '../pages/album/album';
 import {testSocket} from '../pages/testSocket/testSocket';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
@@ -45,6 +46,7 @@ const cloudSettings: CloudSettings = {
         ConnectPage,
         SignPage,
         PlusPage,
+        AlbumPage,
         testSocket,
     ],
     imports: [
@@ -68,6 +70,7 @@ const cloudSettings: CloudSettings = {
         ConnectPage,
         SignPage,
         PlusPage,
+        AlbumPage,
         testSocket,
     ],
     providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]

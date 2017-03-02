@@ -1,7 +1,9 @@
 import {Component, ViewChild} from '@angular/core';
 
-import {NavController, PopoverController} from 'ionic-angular';
+import {NavController, PopoverController, NavParams} from 'ionic-angular';
 
+import {ServerService} from '../util/server.service';
+import {AlbumService} from '../util/album.service';
 import {PlusPage} from '../plus/plus';
 import {DeletePop} from './delete/delete';
 
@@ -11,13 +13,17 @@ import {DeletePop} from './delete/delete';
 })
 
 export class MenuPage {
+    private albumId: string;
     private heure: number;
     private minute: number;
     private state: string;
     plusPage = PlusPage;
     null: any = null;
 
-    constructor(public navCtrl: NavController, public popoverCtrl: PopoverController) {
+    constructor(public navCtrl: NavController, private serverService: ServerService,
+        public popoverCtrl: PopoverController, public params: NavParams,
+        private albumService: AlbumService) {
+        this.albumId = params.get('albumId');
         this.heure = 24;
         this.minute = 42;
     }
@@ -46,7 +52,10 @@ export class MenuPage {
         popover.onDidDismiss((choice: boolean) =>{
             if(choice){
                 console.log('Album supprimé');
-                this.navCtrl.pop();
+                this.serverService.deleteAlbums(this.albumId).subscribe((result) =>{
+                    this.albumService.deleteAlbum(this.albumId);
+                    this.navCtrl.pop({animation: 'fade-transition', direction: 'back'});
+                })
             }
         })
     }

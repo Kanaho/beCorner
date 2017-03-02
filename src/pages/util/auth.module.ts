@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 import { Http, RequestOptions } from '@angular/http';
 import { AuthHttp, AuthConfig } from 'angular2-jwt';
-import {AppSettings} from '../app-settings'
+import {AppSettings} from './app-settings'
+import {StorageService} from '../util/storage.service';
+
+let storageService = new StorageService();
 
 export function authHttpServiceFactory(http: Http, options: RequestOptions) {
     return new AuthHttp(new AuthConfig({
         noJwtError:true,
         headerPrefix:'',
         noTokenScheme:true,
-        tokenName:AppSettings.TOKEN_NAME
+        tokenGetter: (() => storageService.getToken())
     }), http, options);
 }
 

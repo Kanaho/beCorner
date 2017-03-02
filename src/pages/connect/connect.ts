@@ -88,19 +88,18 @@ export class ConnectPage {
     }
 
     connectServer(token: string, id: string) {
-        this.serverService.connect(token, id).subscribe(
+        this.serverService.fbConnect(token, id).subscribe(
             (response) => {
                 let jsonString = JSON.stringify(response);
                 let jsonObject = JSON.parse(jsonString);
                 this.user.token = jsonObject.token;
-                this.storageService.storeUser(this.user.token);
+                this.storageService.storeToken(this.user.token);
             });
     }
 
-    facebookLogOut() {
-        Facebook.logout();
+    LogOut() {
         this.user.token = null;
-        this.storageService.delUser();
+        this.storageService.deleteToken();
         alert("Logged out");
     }
 }

@@ -5,17 +5,17 @@ import {IonicApp, IonicModule, IonicErrorHandler, Config} from 'ionic-angular';
 
 import {CloudSettings, CloudModule} from '@ionic/cloud-angular';
 
+import {AuthModule} from '../pages/util/auth.module'
+
 import {MyApp} from './app.component';
 import {HomePage} from '../pages/home/home';
-import {AboutPage} from '../pages/about/about';
 import {ContactPage} from '../pages/contact/contact';
 import {PhotoPage} from '../pages/photo/photo';
 import {PrintInfo} from '../pages/photo/print/print';
 import {MenuPage} from '../pages/menu/menu';
 import {DeletePop} from '../pages/menu/delete/delete';
 import {OnePic} from '../pages/onePic/onePic';
-import {CommentPop} from '../pages/onePic/comment/comment'
-import {TabsPage} from '../pages/tabs/tabs';
+import {CommentPop} from '../pages/onePic/comment/comment';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
 import {PlusPage} from '../pages/plus/plus';
@@ -34,7 +34,6 @@ const cloudSettings: CloudSettings = {
     declarations: [
         MyApp,
         HomePage,
-        AboutPage,
         ContactPage,
         PhotoPage,
         PrintInfo,
@@ -42,7 +41,6 @@ const cloudSettings: CloudSettings = {
         DeletePop,
         OnePic,
         CommentPop,
-        TabsPage,
         ConnectPage,
         SignPage,
         PlusPage,
@@ -52,13 +50,13 @@ const cloudSettings: CloudSettings = {
     imports: [
         IonicModule.forRoot(MyApp),
         HttpModule, JsonpModule,
-        CloudModule.forRoot(cloudSettings)
+        CloudModule.forRoot(cloudSettings),
+        AuthModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [
         MyApp,
         HomePage,
-        AboutPage,
         ContactPage,
         PhotoPage,
         PrintInfo,
@@ -66,7 +64,6 @@ const cloudSettings: CloudSettings = {
         DeletePop,
         OnePic,
         CommentPop,
-        TabsPage,
         ConnectPage,
         SignPage,
         PlusPage,

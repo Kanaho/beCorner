@@ -6,11 +6,13 @@ import {trigger, state, style, transition, animate} from '@angular/core';
 import {NavController} from 'ionic-angular';
 
 import {AlbumPage} from '../album/album';
+import {PhotoPage} from '../photo/photo';
 import {ConnectPage} from '../connect/connect';
 import {testSocket} from '../testSocket/testSocket';
-import {AboutPage} from '../about/about';
 import {StorageService} from '../util/storage.service';
 import {User} from '../util/user';
+
+import {tokenNotExpired, JwtHelper} from 'angular2-jwt';
 
 @Component({
     selector: 'page-home',
@@ -28,6 +30,7 @@ import {User} from '../util/user';
 
 export class HomePage {
     albumPage = AlbumPage;
+    photoPage = PhotoPage;
     connectPage = ConnectPage;
     flipState: String = 'notFlipped';
 
@@ -41,7 +44,11 @@ export class HomePage {
 
     toPictures() {
         setTimeout(() => {
-            this.navCtrl.push(this.albumPage, null, {animation: 'fade-transition', direction: 'forward'});
+            if(this.user.token){
+               this.navCtrl.push(this.albumPage, null, {animation: 'fade-transition', direction: 'forward'}); 
+            }else{
+                this.navCtrl.push(this.photoPage, null, {animation: 'fade-transition', direction: 'forward'});
+            }
             setTimeout(() => {
                 this.flipState = 'notFlipped';
             }, 800);
@@ -57,10 +64,8 @@ export class HomePage {
         this.navCtrl.push(testSocket);
     }
 
-    request() {
-        this.navCtrl.push(AboutPage);
-    }
-
+    jwtHelper: JwtHelper = new JwtHelper();
+    
     ionViewDidEnter() {
         /*
          * Regarde si la session est déjà active ou pas, et si non, charge le
@@ -68,12 +73,21 @@ export class HomePage {
          */
         if (!this.user.token) {
             this.storageService.getToken().then((token) => {
-                console.log("Token : " + token);
-                this.user.token = token;
+                if (tokenNotExpired(null, token)) {
+                    console.log("Token : " + token);
+                    this.user.token = token;
+                } else {
+                    console.log("token Expired");
+                }
             }, (err) => {
-                console.log("not logged in");
+                console.log("not logged in" + err);
             });
         }
-
+        else if (tokenNotExpired(null, this.user.token)) {
+            console.log(this.jwtHelper.decodeToken(this.user.token));
+            console.log("logged in");
+        } else {
+            console.log("token Expired");
+        }
     }
 }

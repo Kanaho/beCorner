@@ -27,7 +27,7 @@
             </div>
         </ion-item-divider>
         <div *ngIf="showMine==true">
-             <button ion-item *ngFor="let alb of myAlbums" (click)='goToPic(alb)'>
+             <button ion-item *ngFor="let alb of albumService.getAlbums()" (click)='goToPic(alb)'>
                 {{alb.title}}
             </button>
     </div>
@@ -35,7 +35,7 @@
 
 <ion-item-group>
     <ion-item-divider color="light">
-        Albums partagé
+        Albums partagés
         <div (click)="switchShared()" class="dividerIcon">
             <ion-icon *ngIf="showShared==false" name="eye-off" ></ion-icon>
             <ion-icon *ngIf="showShared==true" name="eye"></ion-icon>

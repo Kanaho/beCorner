@@ -17,7 +17,7 @@ export class testSocket{
     
     constructor(public socket: SocketService, http: Http){
         this.messages = [];
-        this.socketHost = "http://192.168.57.1:3000";
+        this.socketHost = "https://socket.io/docs/server-api/";
         this.zone = new NgZone({enableLongStackTrace: false});
         
         this.chatBox = "";

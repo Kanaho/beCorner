@@ -7,13 +7,16 @@ import {PhotoService} from '../pages/util/photo.service';
 import {SocketService} from '../pages/util/socket.service';
 import {ServerService} from '../pages/util/server.service';
 import {StorageService} from '../pages/util/storage.service';
+import {AppHttpService} from '../pages/util/app-http.service';
+import {AlbumService} from '../pages/util/album.service';
 import {User} from '../pages/util/user';
 import {PhotoPage} from '../pages/photo/photo';
 
 
 @Component({
   templateUrl: 'app.html',
-  providers: [PhotoService, User, SocketService, ServerService, StorageService]
+  providers: [PhotoService, User, SocketService, ServerService, 
+    StorageService, AppHttpService, AlbumService]
 })
 export class MyApp {
   rootPage = HomePage;

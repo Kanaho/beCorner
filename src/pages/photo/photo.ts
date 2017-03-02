@@ -4,17 +4,13 @@ import {NavController, NavParams} from 'ionic-angular';
 import {ImagePicker, SocialSharing, ScreenOrientation} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
-/*import * as Caman from 'caman';
-import { canvas } from 'canvas';*/
-
+import {ServerService} from '../util/server.service';
 import {PhotoService} from '../util/photo.service';
+import {AlbumService} from '../util/album.service';
 import {OnePic} from '../onePic/onePic';
 import {MenuPage} from '../menu/menu';
 import {ConnectPage} from '../connect/connect';
 import {User} from '../util/user';
-
-declare var Caman: any;
-declare var cordova: any;
 
 @Component({
     selector: 'photo-home',
@@ -33,32 +29,53 @@ export class PhotoPage {
     menu = MenuPage;
     connectPage = ConnectPage;
 
-    private myImage: string = "http://www.w3schools.com/images/w3schools_green.jpg";
-
     constructor(
         public navCtrl: NavController,
         private params: NavParams,
         public plt: Platform,
         private photoService: PhotoService,
+        private serverService: ServerService,
+        private albumService: AlbumService,
         private user: User) {
         this.albumId = params.get('albumId');
         this.albumName = params.get('albumTitle');
-        console.log(this.albumId);
     }
 
+    ionViewDidEnter() {
+        if (!this.albumId) {
+            alert("vous n'êtes pas connecté");
+        }
+    }
+
+    /*
+     * Permet à l'utilisateur de sélectionner photos.
+     */
     private openGallery(): void {
 
         let pickerOptions = {
-            quality: 100,
             maximumImagesCount: 10,
-            outputType: 0
+            outputType: 1
         }
-        
+
         ImagePicker.getPictures(pickerOptions).then((results) => {
             this.photoService.addPictures(results);
-            this.setupGrid();
+            this.serverService.addPictures(this.photoService.getPictures(), 
+                this.albumId).subscribe((result) =>{
+                    console.log(result);
+                    this.setupGrid();
+                }, (err) =>{
+                    console.log(err);
+                });
+            
         },
             (err) => {});
+    }
+
+    private editTitle(newValue) {
+        if (this.user.token)
+            this.serverService.editAlbums(this.albumId, newValue).subscribe((results) => {
+                this.albumService.updateAlbum(this.albumId, this.albumName);
+            });
     }
 
     selected(img: string): boolean {
@@ -82,6 +99,7 @@ export class PhotoPage {
     onDelete(): void {
         this.photoService.onDelete();
         this.setupGrid();
+        this.setState("select");
     }
 
     setSelectMod(): void {
@@ -89,17 +107,15 @@ export class PhotoPage {
             this.selectedMod = !this.selectedMod;
             if (!this.selectedMod) this.photoService.cleanSel();
             this.setState("select");
-            //BrowserTest 
-            this.setupGrid();
         }
 
     }
 
-    setState(st: string) {
+    setState(state: string) {
         if (this.state != null) {
             this.state = null;
         } else {
-            this.state = st;
+            this.state = state;
         }
     }
 
@@ -120,17 +136,6 @@ export class PhotoPage {
             }
             rowNum++;
         }
-
-        ///BrowserTests
-        /*for (let i = 0; i < 9; i += rowSize) {
-            this.grid[rowNum] = [];
-            for (let j = 0; j < rowSize; j++) {
-                if(i+j <=9)
-                    this.grid[rowNum][j] = this.myImage;
-            }
-
-            rowNum++;
-        }*/
     }
 
     getSquareSize() {
@@ -138,25 +143,6 @@ export class PhotoPage {
             : window.innerWidth / 8);
     }
 
-    private addFilter() {
-        console.log('AddFilter');
-        Caman('#image', function () {
-            /*this.resize({
-                width: 500,
-                height: 300
-            });*/
-
-            this.sunrise();
-            this.render();
-
-            //this.brightness(10).render();
-            /*this.contrast(30);
-            this.sepia(60);
-            this.saturation(-30);
-            this.render();*/
-            console.log('Filter Applied');
-        })
-    }
     upload(): void {
         SocialSharing.share("Regarde moi cet album : beCorner://home", null,
             null, null).then(() => {
@@ -175,7 +161,7 @@ export class PhotoPage {
     }
 
     toMenu(): void {
-        this.navCtrl.push(this.menu);
+        this.navCtrl.push(this.menu, {albumId: this.albumId});
     }
 
     goRoot(): void {

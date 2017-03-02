@@ -11,7 +11,7 @@ export class SocketService{
     socket: any;
     user: any;
     data: any = null;
-    socketHost: string = 'http://192.168.1.100:8080';
+    socketHost: string = 'https://socket.io/docs/server-api/';
     
     constructor(){
         this.socketService = Observable.create(observer =>{

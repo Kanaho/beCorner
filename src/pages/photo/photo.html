@@ -20,9 +20,9 @@
             <ion-grid>
                 <ion-row *ngFor="let row of grid">
                     <ion-col *ngFor="let img of row" width-25 class="picCol">
-                        <div class="container" [ngClass]="{selected: selected(img)}" 
-                             (click)="onSelect(img)">
-                            <img ion-img [src]="img" class="toDisplay"
+                        <div class="container" [ngClass]="{selected: selected(img.idphoto)}" 
+                             (click)="onSelect(img.idphoto)">
+                            <img ion-img [src]="img.src" class="toDisplay"
                             [style.width.px]="getSquareSize()" 
                             [style.height.px]="getSquareSize()"/>
                             <div class="middle">

@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { Http, URLSearchParams } from '@angular/http';
 import {Observable}     from 'rxjs/Observable';
 import {AppHttpService} from './app-http.service';
+import {UploadService} from './upload.service';
+import {Photo} from './photo';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ServerService{
-    constructor(private appHttp: AppHttpService, private http: Http){}
+    constructor(private appHttp: AppHttpService, private http: Http, 
+    private uploadService: UploadService){}
     
     /*
      * Connect via Facebook
@@ -32,7 +35,6 @@ export class ServerService{
         let serveurUrl = 'http://api.becorner.dev/album/getAlbums';
         
         let params = new URLSearchParams();
-        //params.set('token', token);
         
         return (this.request(serveurUrl, params));
     }
@@ -43,7 +45,6 @@ export class ServerService{
         let serveurUrl = 'http://api.becorner.dev/album/createAlbum';
         
         let params = new URLSearchParams();
-        //params.set('token', token);
         
         return (this.request(serveurUrl, params));
     }
@@ -87,13 +88,20 @@ export class ServerService{
         return this.appHttp.post(serveurUrl, params);
     }
     
-    getPictures(idPics: string[], idAlbum: string){
+    getPictures(idAlbum: string){
         
-        let serveurUrl = 'http://api.becorner.dev/photo/getPhoto';
+        let serveurUrl = 'http://api.becorner.dev/photo/getPhotos';
         
-        let params = {idalbum: idAlbum, list: idPics};
+        let params = {idalbum: idAlbum};
         
         return this.appHttp.post(serveurUrl, params);
+    }
+    
+    uploadPicture(picture: Photo, albumId: string){
+        this.uploadService.preparePicture(picture).then((result) =>{
+            this.uploadService.uploadImage(albumId);
+        });
+        
     }
     
     private request(serveurUrl: string, params: URLSearchParams){

@@ -4,6 +4,8 @@ import {NavController, NavParams} from 'ionic-angular';
 import {ImagePicker, SocialSharing, ScreenOrientation} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
+import {SocketService} from '../util/socket.service';
+
 import {ServerService} from '../util/server.service';
 import {PhotoService} from '../util/photo.service';
 import {AlbumService} from '../util/album.service';
@@ -11,6 +13,7 @@ import {OnePic} from '../onePic/onePic';
 import {MenuPage} from '../menu/menu';
 import {ConnectPage} from '../connect/connect';
 import {User} from '../util/user';
+import {Photo} from '../util/photo';
 
 @Component({
     selector: 'photo-home',
@@ -20,12 +23,12 @@ import {User} from '../util/user';
 
 export class PhotoPage {
     private albumId: string;
-    private temp: string[] = [];
-    private grid: string[][];
+    private temp: Array<Photo> = [];
+    private grid: Photo[][];
     private selectedMod: boolean = false;
     private state: string;
     private albumName: string;
-    onePhoto = OnePic;
+    onePic = OnePic;
     menu = MenuPage;
     connectPage = ConnectPage;
 
@@ -36,15 +39,52 @@ export class PhotoPage {
         private photoService: PhotoService,
         private serverService: ServerService,
         private albumService: AlbumService,
-        private user: User) {
+        private user: User,
+        private socket: SocketService) {
         this.albumId = params.get('albumId');
         this.albumName = params.get('albumTitle');
+        this.handleSocket();
     }
 
     ionViewDidEnter() {
         if (!this.albumId) {
             alert("vous n'êtes pas connecté");
+        } else {
+            this.serverService.getPictures(this.albumId).subscribe((response) => {
+                let jsonString = JSON.stringify(response);
+                let jsonResponse = JSON.parse(jsonString);
+                let jsonObject = JSON.parse(jsonResponse._body);
+                for (let object of jsonObject.photos) {
+                    if (!this.photoService.contain(object.idphoto)){
+                        let source;
+                        if(object.uploading == 1){
+                            //Si la photo n'est pas encore up
+                            source = "./img/logo.jpg";
+                        } else{
+                            source = "http://api.becorner.dev" + object.src;
+                        }
+                        this.photoService.addOnePicture({
+                            idphoto: object.idphoto,
+                            name: object.photoName,
+                            src: source,
+                            status: object.uploading //L'état de la photo sur le serveur
+                        });
+                    }
+                }
+                this.setupGrid();
+            })
         }
+    }
+    
+    private handleSocket(){
+        this.socket.socketService.subscribe(event =>{
+            console.log('from serveur..', event);
+            if(event.category === 'thumbnail'){
+                let jsonString = JSON.stringify(event.message);
+                let jsonObject = JSON.parse(jsonString);
+                this.photoService.pictureUp(jsonObject.idphoto, jsonObject.src);
+            }
+        });
     }
 
     /*
@@ -58,17 +98,31 @@ export class PhotoPage {
         }
 
         ImagePicker.getPictures(pickerOptions).then((results) => {
-            this.photoService.addPictures(results);
-            this.serverService.addPictures(this.photoService.getPictures(), 
-                this.albumId).subscribe((result) =>{
-                    console.log(result);
+            let result = results
+            this.serverService.addPictures(results,
+                this.albumId).subscribe((response) => {
+                    let jsonString = JSON.stringify(response);
+                    let jsonResponse = JSON.parse(jsonString);
+                    let jsonObject = JSON.parse(jsonResponse._body);
+                    let i =0;
+                    for (let object of jsonObject.photos) {
+                        let pic = {
+                            idphoto: object.idphoto,
+                            name: object.name,
+                            src: result[i],
+                            status: null
+                        };
+                        this.photoService.addOnePicture(pic);
+                        this.serverService.uploadPicture(pic, this.albumId);
+                        i++;
+                    }
                     this.setupGrid();
-                }, (err) =>{
+                }, (err) => {
                     console.log(err);
                 });
-            
+
         },
-            (err) => {});
+            (err) => {console.log(err)});
     }
 
     private editTitle(newValue) {
@@ -78,28 +132,35 @@ export class PhotoPage {
             });
     }
 
-    selected(img: string): boolean {
-        return this.photoService.getSel().indexOf(img) >= 0;
+    selected(imgId: string): boolean {
+        return this.photoService.isSelected(imgId);
     }
 
-    onSelect(img: string): void {
+    onSelect(imgId: string): void {
         if (this.selectedMod) {
-            if (this.selected(img)) {
-                this.photoService.unSelect(img);
+            if (this.selected(imgId)) {
+                this.photoService.unSelect(imgId);
             } else {
-                this.photoService.onSelect(img);
+                this.photoService.onSelect(imgId);
             }
         } else {
-            this.photoService.setSelected(img);
-            this.navCtrl.push(this.onePhoto, {title: this.albumName},
+            this.photoService.setSelected(imgId);
+            this.navCtrl.push(this.onePic, {title: this.albumName},
                 {animation: 'fade-transition', direction: 'forward'});
         }
     }
 
     onDelete(): void {
-        this.photoService.onDelete();
-        this.setupGrid();
-        this.setState("select");
+        let tempId: string[] = [];
+        for(let pic of this.photoService.getSel()){
+            tempId.push(pic.idphoto);
+        }
+        this.serverService.deletePictures(tempId, this.albumId).subscribe((response) => {
+            this.photoService.onDelete();
+            this.setupGrid();
+            this.setState("delete");
+        })
+        
     }
 
     setSelectMod(): void {

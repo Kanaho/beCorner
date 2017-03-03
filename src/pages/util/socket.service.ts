@@ -3,17 +3,17 @@ import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import * as io from 'socket.io-client';
+import {User} from './user';
 
 @Injectable()
 export class SocketService{
     socketObserver: any;
     socketService: any;
     socket: any;
-    user: any;
     data: any = null;
-    socketHost: string = 'https://socket.io/docs/server-api/';
+    socketHost: string = 'https://api.becorner.dev:5435';
     
-    constructor(){
+    constructor(private user: User){
         this.socketService = Observable.create(observer =>{
             this.socketObserver = observer;
         });
@@ -21,7 +21,7 @@ export class SocketService{
     }
     
     initialize(){
-        this.socket = io.connect(this.socketHost);
+        this.socket = io.connect(this.socketHost, {secure: true, mutliplex: false, query: 'token=' + this.user.token});
         
         this.socket.on("connect", (msg) => {
             console.log('on connect');
@@ -36,6 +36,11 @@ export class SocketService{
             console.log(msg);
             this.socketObserver.next({ category: 'message', message: msg});
         });
+        
+        this.socket.on('thumbnail', (msg) => {
+            console.log(msg);
+            this.socketObserver.next({category: 'thumbnail', message: msg});
+        })
     }
     
     sendMessage(message: string){

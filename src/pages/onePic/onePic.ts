@@ -4,6 +4,7 @@ import {PhotoService} from '../util/photo.service';
 import {NavController, NavParams, PopoverController} from 'ionic-angular';
 
 import {CommentPop} from './comment/comment';
+import {Photo} from '../util/photo';
 
 declare var Caman;
 declare function require(name: string);
@@ -13,7 +14,7 @@ declare function require(name: string);
 })
 
 export class OnePic {
-    private pic: string;
+    private pic: Photo;
     private title: string;
 
     //private Canvas = require('canvas');

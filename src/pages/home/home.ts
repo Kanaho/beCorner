@@ -8,7 +8,7 @@ import {NavController} from 'ionic-angular';
 import {AlbumPage} from '../album/album';
 import {PhotoPage} from '../photo/photo';
 import {ConnectPage} from '../connect/connect';
-import {testSocket} from '../testSocket/testSocket';
+import {SocketService} from '../util/socket.service';
 import {StorageService} from '../util/storage.service';
 import {User} from '../util/user';
 
@@ -36,6 +36,7 @@ export class HomePage {
 
     constructor(public navCtrl: NavController,
         private storageService: StorageService,
+        private socket: SocketService,
         private user: User) {}
 
     getPaddingTop() {
@@ -44,9 +45,9 @@ export class HomePage {
 
     toPictures() {
         setTimeout(() => {
-            if(this.user.token){
-               this.navCtrl.push(this.albumPage, null, {animation: 'fade-transition', direction: 'forward'}); 
-            }else{
+            if (this.user.token) {
+                this.navCtrl.push(this.albumPage, null, {animation: 'fade-transition', direction: 'forward'});
+            } else {
                 this.navCtrl.push(this.photoPage, null, {animation: 'fade-transition', direction: 'forward'});
             }
             setTimeout(() => {
@@ -60,12 +61,8 @@ export class HomePage {
         this.navCtrl.push(this.connectPage);
     }
 
-    socket() {
-        this.navCtrl.push(testSocket);
-    }
-
     jwtHelper: JwtHelper = new JwtHelper();
-    
+
     ionViewDidEnter() {
         /*
          * Regarde si la session est déjà active ou pas, et si non, charge le
@@ -76,6 +73,10 @@ export class HomePage {
                 if (tokenNotExpired(null, token)) {
                     console.log("Token : " + token);
                     this.user.token = token;
+                    this.socket.initialize();
+                    this.socket.socketService.subscribe(event => {
+                        console.log('received from serveur...', event);
+                    })
                 } else {
                     console.log("token Expired");
                 }

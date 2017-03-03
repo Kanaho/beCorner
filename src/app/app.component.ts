@@ -9,6 +9,7 @@ import {ServerService} from '../pages/util/server.service';
 import {StorageService} from '../pages/util/storage.service';
 import {AppHttpService} from '../pages/util/app-http.service';
 import {AlbumService} from '../pages/util/album.service';
+import {UploadService} from '../pages/util/upload.service';
 import {User} from '../pages/util/user';
 import {PhotoPage} from '../pages/photo/photo';
 
@@ -16,7 +17,7 @@ import {PhotoPage} from '../pages/photo/photo';
 @Component({
   templateUrl: 'app.html',
   providers: [PhotoService, User, SocketService, ServerService, 
-    StorageService, AppHttpService, AlbumService]
+    StorageService, AppHttpService, AlbumService, UploadService]
 })
 export class MyApp {
   rootPage = HomePage;
@@ -37,10 +38,6 @@ export class MyApp {
           console.log('Routing failed', nomatch);
       });
       
-      /*this.socket.initialize();
-      this.socket.socketService.subscribe(event =>{
-          console.log('received from serveur...', event);
-      })*/
     });
   }
 }

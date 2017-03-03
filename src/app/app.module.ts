@@ -20,7 +20,6 @@ import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
 import {PlusPage} from '../pages/plus/plus';
 import {AlbumPage} from '../pages/album/album';
-import {testSocket} from '../pages/testSocket/testSocket';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
 
@@ -45,7 +44,6 @@ const cloudSettings: CloudSettings = {
         SignPage,
         PlusPage,
         AlbumPage,
-        testSocket,
     ],
     imports: [
         IonicModule.forRoot(MyApp),
@@ -68,7 +66,6 @@ const cloudSettings: CloudSettings = {
         SignPage,
         PlusPage,
         AlbumPage,
-        testSocket,
     ],
     providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

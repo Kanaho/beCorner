@@ -80,4 +80,9 @@ export class PhotoService {
     getSel(): Photo[] {
         return this.selPic;
     }
+    
+    newService(){
+        this.pictures.splice(0, this.pictures.length);
+        this.onDelete();
+    }
 }

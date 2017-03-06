@@ -38,7 +38,7 @@ export class HomePage {
         private storageService: StorageService,
         private socket: SocketService,
         private user: User) {}
-
+      
     getPaddingTop() {
         return (window.innerHeight / 100) * 25;
     }

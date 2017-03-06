@@ -38,7 +38,7 @@ export class UploadService {
         this.copyFileToLocalDir(path, currentName, picture.name);
         return Promise.resolve("prepared");
     }
-
+    
     private copyFileToLocalDir(namePath, currentName, newFileName) {
         File.copyFile(namePath, currentName, cordova.file.cacheDirectory, newFileName).then(success => {
             this.lastImage = newFileName;

@@ -1,11 +1,11 @@
 import {Component} from '@angular/core';
 
 import {NavController, NavParams} from 'ionic-angular';
-import {ImagePicker, SocialSharing, ScreenOrientation} from 'ionic-native';
+import {ImagePicker, SocialSharing, Network} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
 import {SocketService} from '../util/socket.service';
-
+import {StorageService} from '../util/storage.service';
 import {ServerService} from '../util/server.service';
 import {PhotoService} from '../util/photo.service';
 import {AlbumService} from '../util/album.service';
@@ -40,51 +40,85 @@ export class PhotoPage {
         private serverService: ServerService,
         private albumService: AlbumService,
         private user: User,
-        private socket: SocketService) {
+        private socket: SocketService,
+        private storage: StorageService) {
+        if (this.albumId != params.get('albumId')) {
+            this.photoService.newService();
+        }
         this.albumId = params.get('albumId');
         this.albumName = params.get('albumTitle');
         this.handleSocket();
+        this.handleNetwork();
+        console.log(this.albumId);
     }
 
     ionViewDidEnter() {
-        if (!this.albumId) {
-            alert("vous n'êtes pas connecté");
+        if (Network.type != "none") {
+            this.requestPicture();
         } else {
-            this.serverService.getPictures(this.albumId).subscribe((response) => {
-                let jsonString = JSON.stringify(response);
-                let jsonResponse = JSON.parse(jsonString);
-                let jsonObject = JSON.parse(jsonResponse._body);
-                for (let object of jsonObject.photos) {
-                    if (!this.photoService.contain(object.idphoto)){
-                        let source;
-                        if(object.uploading == 1){
-                            //Si la photo n'est pas encore up
-                            source = "./img/logo.jpg";
-                        } else{
-                            source = "http://api.becorner.dev" + object.src;
-                        }
-                        this.photoService.addOnePicture({
-                            idphoto: object.idphoto,
-                            name: object.photoName,
-                            src: source,
-                            status: object.uploading //L'état de la photo sur le serveur
-                        });
-                    }
-                }
-                this.setupGrid();
-            })
+            this.getPictures();
         }
     }
-    
-    private handleSocket(){
-        this.socket.socketService.subscribe(event =>{
+
+    private requestPicture() {
+        this.serverService.getPictures(this.albumId).subscribe((response) => {
+            let jsonString = JSON.stringify(response);
+            let jsonResponse = JSON.parse(jsonString);
+            let jsonObject = JSON.parse(jsonResponse._body);
+            for (let object of jsonObject.photos) {
+                if (!this.photoService.contain(object.idphoto)) {
+                    let source;
+                    if (object.uploading == 1) {
+                        //Si la photo n'est pas encore up
+                        source = "./img/logo.jpg";
+                    } else {
+                        source = "http://api.becorner.dev" + object.src;
+                    }
+                    let pic = {
+                        idphoto: object.idphoto,
+                        name: object.photoName,
+                        src: source,
+                        status: object.uploading //L'état de la photo sur le serveur
+                    };
+                    this.storage.existPic(pic);
+                    this.photoService.addOnePicture(pic);
+                }
+            }
+            this.setupGrid();
+        })
+    }
+
+    private getPictures() {
+        //Recupere les photos du storage si hors-ligne.
+        let pictures: Photo[] = [];
+        pictures = this.storage.getPictures(this.albumId);
+        for (let pic of pictures) {
+            console.log(JSON.stringify(pic));
+        }
+    }
+
+    private handleSocket() {
+        this.socket.socketService.subscribe(event => {
             console.log('from serveur..', event);
-            if(event.category === 'thumbnail'){
+            if (event.category === 'thumbnail') {
                 let jsonString = JSON.stringify(event.message);
                 let jsonObject = JSON.parse(jsonString);
                 this.photoService.pictureUp(jsonObject.idphoto, jsonObject.src);
             }
         });
+    }
+
+    private handleNetwork() {
+        let connectSub = Network.onConnect().subscribe(() => {
+            console.log("connected");
+        }, () => {
+            console.log("disonnected");
+        })
+        let disconnectSub = Network.onDisconnect().subscribe(() => {
+            console.log(Network.type);
+        }, () => {
+            console.log("err");
+        })
     }
 
     /*
@@ -98,31 +132,53 @@ export class PhotoPage {
         }
 
         ImagePicker.getPictures(pickerOptions).then((results) => {
-            let result = results
-            this.serverService.addPictures(results,
-                this.albumId).subscribe((response) => {
-                    let jsonString = JSON.stringify(response);
-                    let jsonResponse = JSON.parse(jsonString);
-                    let jsonObject = JSON.parse(jsonResponse._body);
-                    let i =0;
-                    for (let object of jsonObject.photos) {
-                        let pic = {
-                            idphoto: object.idphoto,
-                            name: object.name,
-                            src: result[i],
-                            status: null
-                        };
-                        this.photoService.addOnePicture(pic);
-                        this.serverService.uploadPicture(pic, this.albumId);
-                        i++;
-                    }
-                    this.setupGrid();
-                }, (err) => {
-                    console.log(err);
-                });
-
+            if (Network.type != "none") {
+                this.addPictureOnline(results);
+            } else {
+                this.addPictureOffline(results);
+            }
         },
-            (err) => {console.log(err)});
+            (err) => {console.log(err)}
+        );
+    }
+
+    private addPictureOnline(results: any) {
+        let result = results;
+        this.serverService.addPictures(results,
+            this.albumId).subscribe((response) => {
+                let jsonString = JSON.stringify(response);
+                let jsonResponse = JSON.parse(jsonString);
+                let jsonObject = JSON.parse(jsonResponse._body);
+                let i = 0;
+                for (let object of jsonObject.photos) {
+                    let pic: Photo = {
+                        idphoto: object.idphoto,
+                        name: object.name,
+                        src: result[i],
+                        status: null
+                    };
+                    this.photoService.addOnePicture(pic);
+                    this.serverService.uploadPicture(pic, this.albumId);
+                    i++;
+                }
+                this.setupGrid();
+            }, (err) => {
+                console.log(err);
+            });
+    }
+
+    private addPictureOffline(results: any) {
+        for (let source of results) {
+            let pic: Photo = {
+                idphoto: null,
+                name: null,
+                src: source,
+                status: null
+            };
+            this.photoService.addOnePicture(pic);
+            this.storage.storePicture(pic, this.albumId);
+        }
+        this.setupGrid();
     }
 
     private editTitle(newValue) {
@@ -145,14 +201,15 @@ export class PhotoPage {
             }
         } else {
             this.photoService.setSelected(imgId);
-            this.navCtrl.push(this.onePic, {title: this.albumName},
-                {animation: 'fade-transition', direction: 'forward'});
+            if (!this.photoService.getSelected().status)
+                this.navCtrl.push(this.onePic, {title: this.albumName},
+                    {animation: 'fade-transition', direction: 'forward'});
         }
     }
 
     onDelete(): void {
         let tempId: string[] = [];
-        for(let pic of this.photoService.getSel()){
+        for (let pic of this.photoService.getSel()) {
             tempId.push(pic.idphoto);
         }
         this.serverService.deletePictures(tempId, this.albumId).subscribe((response) => {
@@ -160,7 +217,7 @@ export class PhotoPage {
             this.setupGrid();
             this.setState("delete");
         })
-        
+
     }
 
     setSelectMod(): void {

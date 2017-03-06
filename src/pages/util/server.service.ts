@@ -9,6 +9,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class ServerService{
+    
     constructor(private appHttp: AppHttpService, private http: Http, 
     private uploadService: UploadService){}
     

@@ -65,8 +65,10 @@ export class PhotoService {
     
     pictureUp(id: string, source: string){
         let img = this.getImgById(id);
-        img.status = 0;
-        img.src = source;
+        if(img){
+            img.status = 0;
+            img.src = source; 
+        }
     }
 
     getPictures(): Photo[] {

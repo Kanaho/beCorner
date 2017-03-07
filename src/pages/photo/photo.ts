@@ -23,6 +23,7 @@ import {Photo} from '../util/photo';
 
 export class PhotoPage {
     private albumId: string;
+    private previousId: string;
     private temp: Array<Photo> = [];
     private grid: Photo[][];
     private selectedMod: boolean = false;
@@ -42,9 +43,7 @@ export class PhotoPage {
         private user: User,
         private socket: SocketService,
         private storage: StorageService) {
-        if (this.albumId != params.get('albumId')) {
-            this.photoService.newService();
-        }
+        this.previousId = null;
         this.albumId = params.get('albumId');
         this.albumName = params.get('albumTitle');
         this.handleSocket();
@@ -53,13 +52,17 @@ export class PhotoPage {
     }
 
     ionViewDidEnter() {
-        if (Network.type != "none") {
-            this.requestPicture();
-        } else {
-            this.getPictures();
+        if (this.albumId != this.previousId){
+            this.previousId = this.albumId;
+            this.photoService.newService();
+            if (Network.type != "none") {
+                this.requestPicture();
+            } else {
+                this.getPictures();
+            }
         }
     }
-
+    
     private requestPicture() {
         this.serverService.getPictures(this.albumId).subscribe((response) => {
             let jsonString = JSON.stringify(response);
@@ -90,11 +93,21 @@ export class PhotoPage {
 
     private getPictures() {
         //Recupere les photos du storage si hors-ligne.
-        let pictures: Photo[] = [];
-        pictures = this.storage.getPictures(this.albumId);
-        for (let pic of pictures) {
-            console.log(JSON.stringify(pic));
-        }
+        this.storage.getPictures(this.albumId).then((pictures) => {
+            for (let pic of pictures) {
+                let photo = {
+                    idphoto: Date.now().toString(),
+                    name: "Name",
+                    src: pic.src,
+                    status: 1
+                }
+                this.photoService.addOnePicture(photo);
+            }
+            this.setupGrid();
+        }, (err) =>{
+            if(err.code == 2)alert("Impossible de charger les photos existantes");
+            console.log("getPictures " + JSON.stringify(err));
+        });
     }
 
     private handleSocket() {
@@ -168,6 +181,7 @@ export class PhotoPage {
     }
 
     private addPictureOffline(results: any) {
+        let pictures: Photo[] = [];
         for (let source of results) {
             let pic: Photo = {
                 idphoto: null,
@@ -176,8 +190,9 @@ export class PhotoPage {
                 status: null
             };
             this.photoService.addOnePicture(pic);
-            this.storage.storePicture(pic, this.albumId);
+            pictures.push(pic);
         }
+        this.storage.storePictures(pictures, this.albumId);
         this.setupGrid();
     }
 

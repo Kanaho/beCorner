@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
+import {ServerService} from './server.service';
 import 'rxjs/add/operator/map';
 import * as io from 'socket.io-client';
 import {User} from './user';
@@ -13,11 +14,10 @@ export class SocketService{
     data: any = null;
     socketHost: string = 'https://api.becorner.dev:5435';
     
-    constructor(private user: User){
+    constructor(private user: User, private server: ServerService){
         this.socketService = Observable.create(observer =>{
             this.socketObserver = observer;
-        });
-        
+        });      
     }
     
     initialize(){
@@ -25,6 +25,7 @@ export class SocketService{
         
         this.socket.on("connect", (msg) => {
             console.log('on connect');
+            this.server.doWaitingTask();
             this.socketObserver.next({ category: 'connect', message: 'connected'});
         });
         

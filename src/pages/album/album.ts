@@ -27,8 +27,8 @@ export class AlbumPage {
 
     private displayAlbums() {
         this.storageService.getToken().then((token) => {
-            //this.albumService.clearAll();
-            //this.collectAlbums(token);
+            this.albumService.clearAll();
+            this.collectAlbums(token);
             this.getAlbums();
         }, (err) => {
             console.log("cannot collect albums" + err);
@@ -73,7 +73,7 @@ export class AlbumPage {
                 this.albumService.addAlbum(album);
             }
         }, (err) =>{
-            console.log("getAlbums : " + err);
+            if (err.code != 2) console.log("getAlbums : " + JSON.stringify(err));
         });
         
     }

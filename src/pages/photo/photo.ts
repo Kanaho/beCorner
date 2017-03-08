@@ -24,6 +24,7 @@ import {Photo} from '../util/photo';
 export class PhotoPage {
     private albumId: string;
     private previousId: string;
+    private initTitle: string;
     private temp: Array<Photo> = [];
     private grid: Photo[][];
     private selectedMod: boolean = false;
@@ -46,13 +47,14 @@ export class PhotoPage {
         this.previousId = null;
         this.albumId = params.get('albumId');
         this.albumName = params.get('albumTitle');
+        this.initTitle = this.albumName;
         this.handleSocket();
         this.handleNetwork();
         console.log(this.albumId);
     }
 
     ionViewDidEnter() {
-        if (this.albumId != this.previousId){
+        if (this.albumId != this.previousId) {
             this.previousId = this.albumId;
             this.photoService.newService();
             if (Network.type != "none") {
@@ -62,7 +64,11 @@ export class PhotoPage {
             }
         }
     }
-    
+
+    ionViewWillLeave() {
+        if (this.initTitle != this.albumName) this.editTitle(this.albumName);
+    }
+
     private requestPicture() {
         this.serverService.getPictures(this.albumId).subscribe((response) => {
             let jsonString = JSON.stringify(response);
@@ -94,18 +100,20 @@ export class PhotoPage {
     private getPictures() {
         //Recupere les photos du storage si hors-ligne.
         this.storage.getPictures(this.albumId).then((pictures) => {
+            console.log("found");
             for (let pic of pictures) {
                 let photo = {
-                    idphoto: Date.now().toString(),
-                    name: "Name",
+                    idphoto: pic.idphoto,
+                    name: pic.name,
                     src: pic.src,
-                    status: 1
+                    status: pic.status
                 }
+                console.log(photo.idphoto);
                 this.photoService.addOnePicture(photo);
             }
             this.setupGrid();
-        }, (err) =>{
-            if(err.code == 2)alert("Impossible de charger les photos existantes");
+        }, (err) => {
+            if (err.code == 2) alert("Impossible de charger les photos existantes");
             console.log("getPictures " + JSON.stringify(err));
         });
     }
@@ -184,11 +192,12 @@ export class PhotoPage {
         let pictures: Photo[] = [];
         for (let source of results) {
             let pic: Photo = {
-                idphoto: null,
+                idphoto: Date.now().toString() + source,
                 name: null,
                 src: source,
                 status: null
             };
+            console.log(pic.idphoto);
             this.photoService.addOnePicture(pic);
             pictures.push(pic);
         }
@@ -197,10 +206,17 @@ export class PhotoPage {
     }
 
     private editTitle(newValue) {
-        if (this.user.token)
-            this.serverService.editAlbums(this.albumId, newValue).subscribe((results) => {
-                this.albumService.updateAlbum(this.albumId, this.albumName);
-            });
+        if (Network.type != "none") {
+            if (this.user.token)
+                this.serverService.editAlbums(this.albumId, newValue).subscribe((results) => {
+                    this.albumService.updateAlbum(this.albumId, this.albumName);
+                }, (err) => {
+                    console.log("Cannot rename : " + JSON.stringify(err));
+                });
+        } else {
+            this.storage.editAlbum(this.albumId, newValue);
+        }
+
     }
 
     selected(imgId: string): boolean {
@@ -225,14 +241,24 @@ export class PhotoPage {
     onDelete(): void {
         let tempId: string[] = [];
         for (let pic of this.photoService.getSel()) {
+            console.log("Sel :" + pic.idphoto);
             tempId.push(pic.idphoto);
         }
-        this.serverService.deletePictures(tempId, this.albumId).subscribe((response) => {
-            this.photoService.onDelete();
-            this.setupGrid();
-            this.setState("delete");
-        })
+        Network.type != "none" ? this.serverDelete(tempId) : this.storageDelete(tempId);
+        this.photoService.onDelete();
+        this.setupGrid();
+    }
 
+    private serverDelete(tempId: string[]) {
+        this.serverService.deletePictures(tempId, this.albumId).subscribe((response) => {
+
+        })
+    }
+
+    private storageDelete(tempId: string[]) {
+        this.storage.deletePictures(this.albumId, tempId).then((result) => {
+
+        });
     }
 
     setSelectMod(): void {

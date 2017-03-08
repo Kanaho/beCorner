@@ -21,15 +21,17 @@ export class AlbumPage {
         private serverService: ServerService,
         private storageService: StorageService,
         private albumService: AlbumService) {
-        this.displayAlbums();
         this.handleNetwork();
+    }
+
+    ionViewWillEnter() {
+        this.displayAlbums();
     }
 
     private displayAlbums() {
         this.storageService.getToken().then((token) => {
             this.albumService.clearAll();
-            this.collectAlbums(token);
-            this.getAlbums();
+            Network.type != "none" ? this.collectAlbums(token) : this.getAlbums();
         }, (err) => {
             console.log("cannot collect albums" + err);
         })
@@ -40,42 +42,36 @@ export class AlbumPage {
         let connectSub = Network.onConnect().subscribe(() => {
             if (!online) {//Si il n'était pas en ligne
                 online = true;
-                setTimeout(() => {
-                    connectSub.unsubscribe(); //Survit à la fermeture de la page
-                    console.log("Album connected");
-                    this.displayAlbums();
-                }, 500);
+                connectSub.unsubscribe(); //Survit à la fermeture de la page
+                console.log("Album connected");
+                this.displayAlbums();
             }
         })
     }
 
     private collectAlbums(token: string) {
         //Récupère les albums depuis le serveur
-        if (Network.type != "none") {
-            this.serverService.requestAlbums(token).subscribe((response) => {
-                let jsonString = JSON.stringify(response);
-                let jsonObject = JSON.parse(jsonString);
-                for (let object of jsonObject.albums) {
-                    this.albumService.addAlbum({
-                        id: object.idalbum, title: object.album_name,
-                        date: object.date_create
-                    });
-                }
-            })
-        }
+        this.serverService.requestAlbums(token).subscribe((response) => {
+            let jsonString = JSON.stringify(response);
+            let jsonObject = JSON.parse(jsonString);
+            for (let object of jsonObject.albums) {
+                this.albumService.addAlbum({
+                    id: object.idalbum, title: object.album_name,
+                    date: object.date_create
+                });
+            }
+        })
     }
-    
-    private getAlbums(){
+
+    private getAlbums() {
         //Récupère les albums hors-ligne
-        this.storageService.getAlbums().then((result) =>{
-            console.log("Album " + result);
+        this.storageService.getAlbums().then((result) => {
             for (let album of result) {
                 this.albumService.addAlbum(album);
             }
-        }, (err) =>{
+        }, (err) => {
             if (err.code != 2) console.log("getAlbums : " + JSON.stringify(err));
         });
-        
     }
 
     switchMine() {
@@ -108,8 +104,8 @@ export class AlbumPage {
             console.log("impossible de créer un album" + err);
         });
     }
-    
-    private stockNewAlbum(){
+
+    private stockNewAlbum() {
         //Prepare un album dont l'id sera demandé au serveur à la (re)connexion
         let tempId = Date.now().toString();
         this.navCtrl.push(PhotoPage, {albumId: tempId});

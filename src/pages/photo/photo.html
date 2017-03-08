@@ -11,7 +11,7 @@
         </ion-buttons>
     </ion-navbar>
     <input ion-input type="text" placeholder="Nom de mon album" 
-           class="albumName" [(ngModel)]="albumName" (ngModelChange)="editTitle($event)">
+           class="albumName" [(ngModel)]="albumName">
 </ion-header>
 
 <ion-content class="page" [ngClass]="{miniature: state=='print'}">

@@ -54,7 +54,7 @@ export class ServerService {
         return (this.request(serveurUrl, params));
     }
 
-    editAlbums(title: string, id: string): Observable<string[]> {
+    editAlbums(id: string, title: string): Observable<string[]> {
 
         let serveurUrl = 'http://api.becorner.dev/album/updateAlbum';
 

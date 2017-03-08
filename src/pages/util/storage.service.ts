@@ -47,93 +47,105 @@ export class StorageService {
     }
 
     storeAlbum(albumId: string) {
-        let albums: string[] = [];
+        let albums: Array<Album> = [];
         NativeStorage.getItem('onWaiting').then((result) => {
             albums = result.albums;
-            albums.push(albumId);
+            albums.push({
+                id: albumId,
+                title: "Not First",
+                date: null
+            });
             NativeStorage.remove('onWaiting');
             this.createAlbum(albumId, albums);
             console.log("album added");
         }, (err) => {
             if (err.code == 2) {
                 //La file d'attente n'existe pas encore
-                albums.push(albumId);
+                albums.push({
+                    id: albumId,
+                    title: "First",
+                    date: null
+                });
                 this.createAlbum(albumId, albums);
                 console.log("album stored");
             }
         })
     }
 
-    private createAlbum(albumId: string, albums: string[]) {
+    private createAlbum(albumId: string, albums: Array<Album>) {
         NativeStorage.setItem('onWaiting', {albums: albums});
         let pictures: Photo[] = [];
-        NativeStorage.setItem(albumId, {title: "Album Hors-Ligne", pictures: pictures});
+        NativeStorage.setItem(albumId, {pictures: pictures});
+    }
+
+    getAlbums(): Promise<Array<Album>> {
+        return NativeStorage.getItem('onWaiting').then((results) => {
+            return results.albums;
+        })
     }
 
     /*getAlbums(): Promise<Array<Album>> {
         let albums: Array<Album> = [];
-        let temp = NativeStorage.getItem('onWaiting')
-            .then((results) => {
-                for (let i = 0; i < results.albums.length; i++) {
-                    NativeStorage.getItem(results.albums[i]).then((album) => {
-                        albums.push({
-                            id: results.albums[i],
-                            title: album.title,
-                            date: null
-                        })
-                    })
-                }
-            })
-        return temp.then(() => {
-            console.log(albums);
-            return Promise.resolve(albums);
-        })
-    }*/
-
-    getAlbums(): Promise<Array<Album>> {
-        let albums: Array<Album> = [];
         return NativeStorage.getItem('onWaiting').then((results) => {
-            let i = 0;
+            let promises = [];
             for (let result of results.albums) {
                 console.log(result);
-                let alb = this.getOneAlbum(result);
-                console.log(alb)
-                albums.push({
-                    id: result,
-                    title: /*JSON.parse(JSON.stringify(alb)).value*/ "Titre",
-                    date: null
-                })
-                i++;
-                if (i >= results.albums.length) return Promise.resolve(albums);
+                let promise = this.getOneAlbum(result).then((title) => {
+                      albums.push({
+                        id: result,
+                        title: title,
+                        date: null
+                    });
+                });
+                promises.push(promise);
             }
+            return Promise.all(promises).then(()=> {return albums;});
         }, (err) => {
             if (err.code != 2) {
                 console.log("getAlbums : " + JSON.stringify(err));
                 return Promise.reject(err);
             }
-        })
-    }
-
-    getOneAlbum(result) {
-        return NativeStorage.getItem(result).then((alb) => {
-            return Promise.resolve(alb.title);
-        }, (err) => {
-            console.log("getOneAlbum : " + JSON.stringify(err));
-        })
-    }
+            })
+    }*/
 
     removeAlbum(albumId: string) {
         NativeStorage.remove(albumId).then(() => {
             NativeStorage.getItem('onWaiting').then((result) => {
-                let albums: string[] = [];
+                let albums: Array<Album> = [];
                 albums = result.albums;
-                albums.splice(albums.indexOf(albumId), 1);
-                NativeStorage.remove('onWaiting');
-                NativeStorage.setItem('onWaiting', {albums: albums});
+                let album = this.findAlbum(albums, albumId);
+                if (album) {
+                    albums.splice(albums.indexOf(album), 1);
+                    NativeStorage.remove('onWaiting');
+                    NativeStorage.setItem('onWaiting', {albums: albums});
+                }
             })
         }, (err) => {
+            if(err.code == 2) console.log("Cannot remove album on server");
             console.log("removeAlbum " + err)
         });
+    }
+
+    editAlbum(albumId: string, title: string) {
+        NativeStorage.getItem('onWaiting').then((result) => {
+            let albums: Array<Album> = [];
+            albums = result.albums;
+            let album = this.findAlbum(albums, albumId);
+            if (album) {
+                album.title = title;
+                NativeStorage.remove('onWaiting');
+                NativeStorage.setItem('onWaiting', {albums: albums});
+            } else {
+                //L'album n'existe que sur le serveur
+            }
+        })
+    }
+
+    private findAlbum(albums: Array<Album>, albumId: string) {
+        for (let album of albums) {
+            if (album.id == albumId) return album
+        }
+        return null;
     }
 
     getPictures(albumId: string) {
@@ -153,9 +165,35 @@ export class StorageService {
                 pictures.push(photo);
             }
             NativeStorage.remove(albumId);
-            NativeStorage.setItem(albumId, {title: result.title, pictures: pictures});
+            NativeStorage.setItem(albumId, {pictures: pictures});
         }, (err) => {
             console.log("storePicture : " + err);
+        })
+    }
+    
+    deletePictures(albumId: string, photoId: string[]){
+        let find, i;
+        let tempPic: Array<Photo> = []
+        return NativeStorage.getItem(albumId).then((result) => {
+            let pictures: Photo[] = [];
+            pictures = result.pictures;
+            console.log("All pics" + JSON.stringify(pictures));
+            for(let pic of pictures){
+                find = false;
+                i = 0;
+                console.log("Pic looked : " + JSON.stringify(pic));
+                while (!find && i < photoId.length){
+                    console.log("ID looked :" + JSON.stringify(photoId[i]))
+                    if (find = (pic.idphoto == photoId[i])){
+                         photoId.splice(i ,1);
+                    }
+                    i++;
+                }
+                if (!find) tempPic.push(pic);
+            }
+            console.log("Pic restantes : " + JSON.stringify(tempPic));
+            NativeStorage.remove(albumId);
+            NativeStorage.setItem(albumId, {pictures: tempPic});
         })
     }
 }

@@ -1,9 +1,11 @@
 import {Component, ViewChild} from '@angular/core';
 
 import {NavController, PopoverController, NavParams} from 'ionic-angular';
+import {Network} from 'ionic-native';
 
 import {ServerService} from '../util/server.service';
 import {AlbumService} from '../util/album.service';
+import {StorageService} from '../util/storage.service';
 import {PlusPage} from '../plus/plus';
 import {DeletePop} from './delete/delete';
 
@@ -22,7 +24,7 @@ export class MenuPage {
 
     constructor(public navCtrl: NavController, private serverService: ServerService,
         public popoverCtrl: PopoverController, public params: NavParams,
-        private albumService: AlbumService) {
+        private albumService: AlbumService, private storage: StorageService) {
         this.albumId = params.get('albumId');
         this.heure = 24;
         this.minute = 42;
@@ -36,29 +38,39 @@ export class MenuPage {
         this.navCtrl.pop();
         this.state = "back";
     }
-    
-    deleteAlbum(){
+
+    deleteAlbum() {
         this.navCtrl.pop();
         this.state = "delete";
     }
 
-    ionViewDidLeave(){
-        if(this.state == "delete") this.presentDelete();
+    ionViewDidLeave() {
+        if (this.state == "delete") this.presentDelete();
     }
-    
-    presentDelete(){
+
+    presentDelete() {
         let popover = this.popoverCtrl.create(DeletePop);
         popover.present();
-        popover.onDidDismiss((choice: boolean) =>{
-            if(choice){
+        popover.onDidDismiss((choice: boolean) => {
+            if (choice) {
                 console.log('Album supprimé');
-                this.serverService.deleteAlbums(this.albumId).subscribe((result) =>{
-                    this.albumService.deleteAlbum(this.albumId);
-                    this.navCtrl.pop({animation: 'fade-transition', direction: 'back'});
-                })
+                Network.type != "none" ? this.serverDelete() : this.storageDelete();
+                this.albumService.deleteAlbum(this.albumId);
+                this.navCtrl.pop({animation: 'fade-transition', direction: 'back'});
             }
         })
     }
+
+    private serverDelete() {
+        this.serverService.deleteAlbums(this.albumId).subscribe((result) => {
+
+        })
+    }
+
+    private storageDelete() {
+        this.storage.removeAlbum(this.albumId);
+    }
+
     goPlus() {
         this.navCtrl.push(this.plusPage);
     }

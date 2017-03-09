@@ -10,7 +10,7 @@ declare var cordova: any;
 @Injectable()
 export class UploadService {
     private lastImage: string;
-    private imgId:string;
+    private imgId:number;
 
     constructor(private platform: Platform, private user: User) {
     }
@@ -35,7 +35,7 @@ export class UploadService {
         let path = picture.src.substr(0, picture.src.lastIndexOf('/') + 1);
         this.imgId = picture.idphoto;
         this.lastImage=picture.src;
-        this.copyFileToLocalDir(path, currentName, picture.name);
+        //this.copyFileToLocalDir(path, currentName, picture.name);
         return Promise.resolve("prepared");
     }
     
@@ -56,7 +56,7 @@ export class UploadService {
         }
     }
 
-    public uploadImage(albumId: string) {
+    public uploadImage(albumId: number, imgId: number, filename: string) {
         var url = "http://api.becorner.dev/upload/upload";
         //var targetPath = this.pathForImage(this.lastImage);
         var filename = this.lastImage;
@@ -65,7 +65,7 @@ export class UploadService {
             fileKey: "qqfile",
             fileName: filename,
             mimeType: "image/jpeg",
-            params: {'fileName': filename, 'idphoto': this.imgId, 'idalbum': albumId},
+            params: {'fileName': filename, 'idphoto': imgId, 'idalbum': albumId},
             headers: {Authorization: this.user.token}
         };
 

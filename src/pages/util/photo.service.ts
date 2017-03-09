@@ -19,15 +19,15 @@ export class PhotoService {
         this.pictures.push(temp);
     }
     
-    contain(imgId: string){
+    contain(imgId: number){
         return this.getImgById(imgId) != null;
     }
     
-    setSelected(imgId: string): void {
+    setSelected(imgId: number): void {
         this.selectedPic = this.getImgById(imgId);
     }
 
-    onSelect(imgId: string): void {
+    onSelect(imgId: number): void {
         this.selPic.push(this.getImgById(imgId));
     }
 
@@ -37,7 +37,7 @@ export class PhotoService {
         }
     }
 
-    unSelect(imgId: string): void {
+    unSelect(imgId: number): void {
         this.selPic.splice(this.selPic.indexOf(this.getImgById(imgId)), 1);
     }
 
@@ -49,21 +49,21 @@ export class PhotoService {
         this.selectedPic = null;
     }
     
-    private getImgById(imgId: string){
+    private getImgById(imgId: number){
         for (let i = 0; i < this.pictures.length; i++){
             if (this.pictures[i].idphoto == imgId) return this.pictures[i];
         }
         return null;
     }
     
-    isSelected(id: string){
+    isSelected(id: number){
         for (let i = 0; i < this.selPic.length; i++){
             if (this.selPic[i].idphoto == id) return true;
         }
         return false;
     }
     
-    pictureUp(id: string, source: string){
+    pictureUp(id: number, source: string){
         let img = this.getImgById(id);
         if(img){
             img.status = 0;

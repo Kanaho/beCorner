@@ -15,7 +15,7 @@ import {DeletePop} from './delete/delete';
 })
 
 export class MenuPage {
-    private albumId: string;
+    private albumId: number;
     private heure: number;
     private minute: number;
     private state: string;

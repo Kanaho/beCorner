@@ -25,7 +25,7 @@ export class SocketService{
         
         this.socket.on("connect", (msg) => {
             console.log('on connect');
-            this.server.doWaitingTask();
+            this.server.doWaitingAction();
             this.socketObserver.next({ category: 'connect', message: 'connected'});
         });
         

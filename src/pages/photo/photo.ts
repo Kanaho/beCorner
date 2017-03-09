@@ -14,6 +14,7 @@ import {MenuPage} from '../menu/menu';
 import {ConnectPage} from '../connect/connect';
 import {User} from '../util/user';
 import {Photo} from '../util/photo';
+import {ActionType} from '../util/action';
 
 @Component({
     selector: 'photo-home',
@@ -22,14 +23,13 @@ import {Photo} from '../util/photo';
 
 
 export class PhotoPage {
-    private albumId: string;
-    private previousId: string;
+    private album: Album;
+    private previousId: number;
     private initTitle: string;
     private temp: Array<Photo> = [];
     private grid: Photo[][];
     private selectedMod: boolean = false;
     private state: string;
-    private albumName: string;
     onePic = OnePic;
     menu = MenuPage;
     connectPage = ConnectPage;
@@ -45,17 +45,16 @@ export class PhotoPage {
         private socket: SocketService,
         private storage: StorageService) {
         this.previousId = null;
-        this.albumId = params.get('albumId');
-        this.albumName = params.get('albumTitle');
-        this.initTitle = this.albumName;
+        this.album = params.get('album');
+        this.initTitle = this.album.title;
         this.handleSocket();
         this.handleNetwork();
-        console.log(this.albumId);
+        console.log(this.album.id);
     }
 
     ionViewDidEnter() {
-        if (this.albumId != this.previousId) {
-            this.previousId = this.albumId;
+        if (this.album.id != this.previousId) {
+            this.previousId = this.album.id;
             this.photoService.newService();
             if (Network.type != "none") {
                 this.requestPicture();
@@ -66,11 +65,11 @@ export class PhotoPage {
     }
 
     ionViewWillLeave() {
-        if (this.initTitle != this.albumName) this.editTitle(this.albumName);
+        if (this.initTitle != this.album.title) this.editTitle(this.album.title);
     }
 
     private requestPicture() {
-        this.serverService.getPictures(this.albumId).subscribe((response) => {
+        this.serverService.getPictures(this.album.id).subscribe((response) => {
             let jsonString = JSON.stringify(response);
             let jsonResponse = JSON.parse(jsonString);
             let jsonObject = JSON.parse(jsonResponse._body);
@@ -99,7 +98,7 @@ export class PhotoPage {
 
     private getPictures() {
         //Recupere les photos du storage si hors-ligne.
-        this.storage.getPictures(this.albumId).then((pictures) => {
+        this.storage.getPictures(this.album.id).then((pictures) => {
             console.log("found");
             for (let pic of pictures) {
                 let photo = {
@@ -113,7 +112,7 @@ export class PhotoPage {
             }
             this.setupGrid();
         }, (err) => {
-            if (err.code == 2) alert("Impossible de charger les photos existantes");
+            if (err.code == 2 && this.album.id >0) alert("Impossible de charger les photos existantes");
             console.log("getPictures " + JSON.stringify(err));
         });
     }
@@ -124,7 +123,7 @@ export class PhotoPage {
             if (event.category === 'thumbnail') {
                 let jsonString = JSON.stringify(event.message);
                 let jsonObject = JSON.parse(jsonString);
-                this.photoService.pictureUp(jsonObject.idphoto, jsonObject.src);
+                this.photoService.pictureUp(jsonObject.idphoto, "http://api.becorner.dev" +jsonObject.src);
             }
         });
     }
@@ -166,7 +165,7 @@ export class PhotoPage {
     private addPictureOnline(results: any) {
         let result = results;
         this.serverService.addPictures(results,
-            this.albumId).subscribe((response) => {
+            this.album.id).subscribe((response) => {
                 let jsonString = JSON.stringify(response);
                 let jsonResponse = JSON.parse(jsonString);
                 let jsonObject = JSON.parse(jsonResponse._body);
@@ -179,7 +178,7 @@ export class PhotoPage {
                         status: null
                     };
                     this.photoService.addOnePicture(pic);
-                    this.serverService.uploadPicture(pic, this.albumId);
+                    this.serverService.uploadPicture(pic, this.album.id);
                     i++;
                 }
                 this.setupGrid();
@@ -192,7 +191,7 @@ export class PhotoPage {
         let pictures: Photo[] = [];
         for (let source of results) {
             let pic: Photo = {
-                idphoto: Date.now().toString() + source,
+                idphoto: -Date.now(),
                 name: null,
                 src: source,
                 status: null
@@ -201,29 +200,32 @@ export class PhotoPage {
             this.photoService.addOnePicture(pic);
             pictures.push(pic);
         }
-        this.storage.storePictures(pictures, this.albumId);
+        //this.storage.storePictures(pictures, this.album.id);
+        this.storage.storeAction(this.album, ActionType.Add, pictures);
         this.setupGrid();
     }
 
     private editTitle(newValue) {
         if (Network.type != "none") {
             if (this.user.token)
-                this.serverService.editAlbums(this.albumId, newValue).subscribe((results) => {
-                    this.albumService.updateAlbum(this.albumId, this.albumName);
+                this.serverService.editAlbums(this.album.id, newValue).subscribe((results) => {
+                    this.albumService.updateAlbum(this.album.id, this.album.title);
                 }, (err) => {
                     console.log("Cannot rename : " + JSON.stringify(err));
                 });
         } else {
-            this.storage.editAlbum(this.albumId, newValue);
+            //this.storage.editAlbum(this.album.id, newValue);
+            let none: Photo[] = [];
+            this.storage.storeAction(this.album, ActionType.Rename, none);
         }
 
     }
 
-    selected(imgId: string): boolean {
+    selected(imgId: number): boolean {
         return this.photoService.isSelected(imgId);
     }
 
-    onSelect(imgId: string): void {
+    onSelect(imgId: number): void {
         if (this.selectedMod) {
             if (this.selected(imgId)) {
                 this.photoService.unSelect(imgId);
@@ -233,13 +235,13 @@ export class PhotoPage {
         } else {
             this.photoService.setSelected(imgId);
             if (!this.photoService.getSelected().status)
-                this.navCtrl.push(this.onePic, {title: this.albumName},
+                this.navCtrl.push(this.onePic, {title: this.album.id},
                     {animation: 'fade-transition', direction: 'forward'});
         }
     }
 
     onDelete(): void {
-        let tempId: string[] = [];
+        let tempId: number[] = [];
         for (let pic of this.photoService.getSel()) {
             console.log("Sel :" + pic.idphoto);
             tempId.push(pic.idphoto);
@@ -249,16 +251,15 @@ export class PhotoPage {
         this.setupGrid();
     }
 
-    private serverDelete(tempId: string[]) {
-        this.serverService.deletePictures(tempId, this.albumId).subscribe((response) => {
+    private serverDelete(tempId: number[]) {
+        this.serverService.deletePictures(tempId, this.album.id).subscribe((response) => {
 
         })
     }
 
-    private storageDelete(tempId: string[]) {
-        this.storage.deletePictures(this.albumId, tempId).then((result) => {
-
-        });
+    private storageDelete(tempId: number[]) {
+        //this.storage.deletePictures(this.album.id, tempId).then((result) => {});
+        this.storage.storeAction(this.album, ActionType.Delete, this.photoService.getSel());
     }
 
     setSelectMod(): void {
@@ -316,11 +317,10 @@ export class PhotoPage {
             console.log("print");
             this.setState("print");
         }
-
     }
 
     toMenu(): void {
-        this.navCtrl.push(this.menu, {albumId: this.albumId});
+        this.navCtrl.push(this.menu, {albumId: this.album.id});
     }
 
     goRoot(): void {

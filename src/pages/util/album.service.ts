@@ -15,7 +15,7 @@ export class AlbumService {
         this.myAlbums.push(album);
     }
     
-    deleteAlbum(id: string){
+    deleteAlbum(id: number){
         let alb = this.findAlbum(id);
         this.myAlbums.splice(this.myAlbums.indexOf(alb),1);
     }
@@ -24,12 +24,12 @@ export class AlbumService {
         this.myAlbums.splice(0, this.myAlbums.length);
     }
     
-    updateAlbum(id: string, title: string){
+    updateAlbum(id: number, title: string){
         let alb = this.findAlbum(id);
         alb.title = title;
     }
     
-    private findAlbum(id: string){
+    private findAlbum(id: number){
         for(let alb of this.myAlbums){
             if (alb.id == id)
                 return alb;

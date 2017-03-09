@@ -7,6 +7,7 @@ import {ServerService} from '../util/server.service';
 import {StorageService} from '../util/storage.service';
 import {AlbumService} from '../util/album.service';
 import {PhotoPage} from '../photo/photo';
+import {ActionType} from '../util/action';
 
 
 @Component({
@@ -107,13 +108,18 @@ export class AlbumPage {
 
     private stockNewAlbum() {
         //Prepare un album dont l'id sera demandé au serveur à la (re)connexion
-        let tempId = Date.now().toString();
-        this.navCtrl.push(PhotoPage, {albumId: tempId});
-        this.storageService.storeAlbum(tempId);
+        let tempAlb = {
+                    id: -Date.now(),
+                    title: "",
+                    date: null
+                }
+        this.navCtrl.push(PhotoPage, {album: tempAlb});
+        //this.storageService.storeAlbum(tempAlb);
+        this.storageService.storeAction(tempAlb, ActionType.Create, []);
     }
 
     goToPic(alb: Album): void {
-        this.navCtrl.push(PhotoPage, {albumId: alb.id, albumTitle: alb.title});
+        this.navCtrl.push(PhotoPage, {album: alb});
     }
 
     goRoot(): void {

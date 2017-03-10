@@ -212,7 +212,8 @@ export class StorageService {
                 console.log("add action " + action.toString());
                 actions.push(newAction);
             }
-            if (action == ActionType.Create){
+            if (action == ActionType.Create) {
+                console.log('Need to store an id');
                 this.storeIdTemp(album.id);
             }
             console.log("An action added");
@@ -221,6 +222,10 @@ export class StorageService {
         }, (err) => {
             if (err.code == 2) { //Le Storage Transaction n'existe pas
                 console.log("A new Action");
+                if (action == ActionType.Create) {
+                    console.log('Need to store an id');
+                    this.storeIdTemp(album.id);
+                }
                 actions.push(newAction);
                 NativeStorage.setItem('transaction', {actions: actions});
             }
@@ -233,95 +238,109 @@ export class StorageService {
      * c'est le cas.
      */
     private checkDelAction(actions: Action[], toCheck: Action) {
-        let tempActions: Action[] = [];
-        for (let action of actions) {
-            if ((action.action == ActionType.Add) && (action.album.id == toCheck.album.id)) {
+        console.log("checkDelAction");
+        console.log("nb action start:"  + actions.length);
+        let tempActions: Action[] = actions.slice();
+        let j = 0;
+        let k = 0;
+        while (j < actions.length && toCheck.pictures.length>0) {
+            if ((actions[j].action == ActionType.Add) && (actions[j].album.id == toCheck.album.id)) {
                 let find, i;
                 let tempPic: Photo[] = [];
-                for (let pic of action.pictures) {
+                for (let pic of actions[j].pictures) {
                     find = false;
                     i = 0;
                     while (!find && i < toCheck.pictures.length) {
                         if (find = (pic.idphoto == toCheck.pictures[i].idphoto)) {
                             toCheck.pictures.splice(i, 1);
+                            tempActions[k].pictures.splice(tempActions[k].pictures.indexOf(pic), 1);
                         }
                         i++;
                     }
-                    if (!find) tempPic.push(pic);
                 }
                 console.log("A supprimer : " + JSON.stringify(toCheck.pictures));
                 console.log("Restantes : " + JSON.stringify(tempPic));
-                if (tempPic.length != 0) {
+                if (tempActions[k].pictures.length == 0) {
                     //On conserve l'action
-                    action.pictures = tempPic;
-                    tempActions.push(action);
+                    //actions[j].pictures = tempPic;
+                    tempActions.splice(k, 1);
+                    k--;
                 }
             }
+            j++;
+            k++;
         }
+        console.log("nb action end:"  + actions.length);
         return {all: tempActions, check: toCheck};
     }
-    
-    private storeIdTemp(id: number){
+
+    private storeIdTemp(id: number) {
         //Tuple d'id temporaire et d'id définit par le serveur
+        console.log('Store ID');
         let storedId: Array<[number, number]> = [];
         let toStore: [number, number] = [id, null];
-        NativeStorage.getItem('waitingId').then((result) =>{
+        NativeStorage.getItem('waitingId').then((result) => {
             storedId = result.storedId;
             storedId.push(toStore);
             NativeStorage.remove('waitingId');
             NativeStorage.setItem('waitingId', {storedId: storedId});
-        }, (err) =>{
-            if(err.code == 2){
+            console.log('idTemp added')
+        }, (err) => {
+            if (err.code == 2) {
                 storedId.push(toStore);
                 NativeStorage.setItem('waitingId', {storedId: storedId});
                 console.log('idTemp Stored');
             }
         })
     }
-    
-    storeRealId(idTemp: number, idReal: number){
-        console.log("StorageRealID : " + idTemp +"TO ->" + idReal);
+
+    storeRealId(idTemp: number, idReal: number) {
+        console.log("StorageRealID : " + idTemp + " TO ->" + idReal);
         let storedId: Array<[number, number]> = [];
-        NativeStorage.getItem('waitingId').then((result) =>{
+        return NativeStorage.getItem('waitingId').then((result) => {
             storedId = result.storedId;
             let i = 0;
             let find = false;
-            while (!find && i < storedId.length){
-                if(find = (storedId[i][0] == idTemp)){
+            while (!find && i < storedId.length) {
+                if (find = (storedId[i][0] == idTemp)) {
                     storedId[i][1] = idReal;
                 }
                 i++;
             }
             NativeStorage.remove('waitingId');
             NativeStorage.setItem('waitingId', {storedId: storedId});
-        }, (err) =>{
+            console.log("Real id stored");
+            return true;
+        }, (err) => {
             console.log("StorageRealId " + JSON.stringify(err));
+            return false;
         })
     }
-    
-    getRealId(idTemp: number){
-        return NativeStorage.getItem('waitingId').then((result) =>{
-            for(let idTuple of result.storedId){
-                if(idTuple[0] == idTemp){
+
+    getRealId(idTemp: number) {
+        return NativeStorage.getItem('waitingId').then((result) => {
+            for (let idTuple of result.storedId) {
+                console.log('idTuple' + JSON.stringify(idTuple));
+                if (idTuple[0] == idTemp) {
                     console.log("Real Id : " + idTuple[1]);
                     return idTuple[1];
                 }
             }
-        }, (err) =>{
+        }, (err) => {
             console.log("GetRealId : " + JSON.stringify(err));
         })
     }
-    
-    getWaitingAction(): Promise<Array<Action>>{
-        return NativeStorage.getItem('transaction').then((result) =>{
+
+    getWaitingAction(): Promise<Array<Action>> {
+        return NativeStorage.getItem('transaction').then((result) => {
             return result.actions;
-        }, (err) =>{
+        }, (err) => {
             console.log("getWaitingAction :" + JSON.stringify(err));
             return [];
         })
     }
 
-    cleanWaiting(){
+    cleanWaiting() {
         console.log("Clean Waiting");
         NativeStorage.remove('waitingId');
         NativeStorage.remove('transaction');

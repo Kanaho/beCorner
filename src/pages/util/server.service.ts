@@ -10,6 +10,7 @@ import {Photo} from './photo';
 import {Action, ActionType} from './action';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class ServerService {
@@ -47,7 +48,6 @@ export class ServerService {
 
     createAlbums(title?: string): Observable<string[]> {
 
-        console.log("create");
         let serveurUrl = 'http://api.becorner.dev/album/createAlbum';
 
         let params = new URLSearchParams();
@@ -105,10 +105,10 @@ export class ServerService {
     }
 
     uploadPicture(picture: Photo, albumId: number) {
-        /*this.uploadService.preparePicture(picture).then((result) => {
+        this.uploadService.preparePicture(picture).then((result) => {
             this.uploadService.uploadImage(albumId);
-        });*/
-        this.uploadService.uploadImage(albumId, picture.idphoto, picture.name);
+        });
+        //this.uploadService.uploadImage(albumId, picture.idphoto, picture.name);
     }
 
     private request(serveurUrl: string, params: URLSearchParams) {
@@ -158,43 +158,51 @@ export class ServerService {
     doWaitingAction() {
         console.log("doWaiting");
         this.storage.getWaitingAction().then((result) => {
-            let actions: Array<Action> = result;
-            console.log("Nbr Action : " + actions.length);
-            let promises = [];
-            while (Network.type != "none" && actions.length > 0) {
-                let promise;
-                let actionsTemp: Array<Action> = [];
-                for (let action of actions) {
-                    switch (action.action) {
-                        case ActionType.Add:
-                        case ActionType.Delete: //Ajout && Suppression de photo(s)
-                            console.log("doPictures");
-                            promise = this.waitingPictures(action).then((success) => {
-                                console.log("After doPic" + JSON.stringify(success));
-                                if (!success){
-                                    console.log("failure" + JSON.stringify(success));
-                                     actionsTemp.push(action);
-                                }
-                            }, (err) =>{
-                                console.log(JSON.stringify(err));
-                            });
-                            break;
-                        case ActionType.Rename: //Changement de titre d'album
-                            console.log("doEdit");
-                            promise = this.waitingEdit(action)
-                            break;
-                        case ActionType.Create: //Creation d'album
-                            console.log("doCreate");
-                            promise = this.waitingCreate(action);
-                            break;
-                    }
-                    promises.push(promise);
+            this.makeActions(result);
+        })
+    }
+
+    private makeActions(actions: Array<Action>) {
+        console.log("Nbr Action : " + actions.length);
+        let promises: Array<Promise<any>> = [];
+        while (Network.type != "none" && actions.length > 0) {
+            let actionsTemp: Array<Action> = [];
+            let promise: Promise<any>;
+            for (let action of actions) {
+                switch (action.action) {
+                    case ActionType.Add:
+                    case ActionType.Delete: //Ajout && Suppression de photo(s)
+                        console.log("doPictures");
+                        promise = this.waitingPictures(action).then((success) => {
+                            console.log("After doPic" + JSON.stringify(success));
+                            if (!success.valueOf()) {
+                                console.log("failure doPic");
+                                actionsTemp.push(action);
+                            }
+                        }, (err) => {
+                            console.log(JSON.stringify(err));
+                        });
+                        break;
+                    case ActionType.Rename: //Changement de titre d'album
+                        console.log("doEdit");
+                        promise = this.waitingEdit(action).then(() => {console.log("Edit done")});
+                        break;
+                    case ActionType.Create: //Creation d'album
+                        console.log("doCreate");
+                        promise = this.waitingCreate(action).then(() => {console.log("Create done")});
+                        break;
                 }
-                actions = actionsTemp;
+                promises.push(promise);
             }
-            Promise.all(promises).then(() => {
+            actions = actionsTemp;
+        }
+        Promise.all(promises).then(() => {
+            console.log(actions.length);
+
+            if (actions.length == 0)
                 this.storage.cleanWaiting();
-            })
+            else
+                this.makeActions(actions);
         })
     }
 
@@ -203,17 +211,23 @@ export class ServerService {
         console.log(albumId);
         if (albumId < 0) {
             let promises = [];
-            let promise = this.storage.getRealId(albumId).then((realId) => {
-                if (realId != null) {
-                    if (action.action == ActionType.Add) return this.doAdd(realId, action.pictures);
-                    else return this.doDelete(realId, action.pictures);
-                }else{
-                    console.log("Id is null" + realId);
-                    return false;
-                }
-            });
+            let promise = new Promise((resolve, reject) => {
+                this.storage.getRealId(albumId).then((realId) => {
+                    albumId = realId;
+                    if (albumId != null) {
+                        if (action.action == ActionType.Add) resolve(this.doAdd(albumId, action.pictures));
+                        else resolve(this.doDelete(albumId, action.pictures));
+                    } else {
+                        console.log("Id is null" + albumId);
+                        resolve(false);
+                    }
+                }, (err) => {
+                    console.log("waiting Pic" + JSON.stringify(err));
+                    reject(err);
+                });
+            })
             promises.push(promise);
-            Promise.all(promises).then(() => {console.log("Promise :" + JSON.stringify(promise)); return promise});
+            return Promise.all(promises).then(() => {console.log("Promise :" + JSON.stringify(promise)); return albumId > 0});
         } else {
             console.log("WaitingPic")
             if (action.action == ActionType.Add) return this.doAdd(albumId, action.pictures);
@@ -224,57 +238,71 @@ export class ServerService {
     /*
      * Effectue l'action d'ajout
      */
-    private doAdd(albumId: number, pictures: Photo[]) {
+    private doAdd(albumId: number, pictures: Photo[]): Promise<boolean> {
         console.log('doAdd');
         let promises = [];
         for (let pic of pictures) {
             let pict: string[] = [pic.src];
-            let promise = this.addPictures(pict, albumId).subscribe((response) => {
-                let jsonString = JSON.stringify(response);
-                let jsonResponse = JSON.parse(jsonString);
-                let jsonObject = JSON.parse(jsonResponse._body);
-                pic.idphoto = jsonObject.photos[0].idphoto;//jsonObject[0] parce que envoi d'une seule photo
-                pic.name = jsonObject.photos[0].name;
-                console.log("Upload");
-                this.uploadPicture(pic, jsonObject.idalbum);
-            }, (err) => {
-                console.log("addPicturesSync" + JSON.stringify(err));
-                return Promise.reject(err);
+            let promise = new Promise((resolve, reject) => {
+                this.addPictures(pict, albumId).subscribe((response) => {
+                    let jsonString = JSON.stringify(response);
+                    let jsonResponse = JSON.parse(jsonString);
+                    let jsonObject = JSON.parse(jsonResponse._body);
+                    pic.idphoto = jsonObject.photos[0].idphoto;//jsonObject[0] parce que envoi d'une seule photo
+                    pic.name = jsonObject.photos[0].name;
+                    console.log("Upload");
+                    console.log("Picture" + JSON.stringify(pic));
+                    this.uploadPicture(pic, jsonObject.idalbum);
+                    resolve(true);
+                }, (err) => {
+                    console.log("addPicturesSync" + JSON.stringify(err));
+                    reject(err);
+                })
             })
             promises.push(promise);
         }
-        return Promise.all(promises).then(() => {return true;});
+        return Promise.all(promises).then(() => {return true;}, (err) => {console.log("doAdd")});
     }
 
-    private doDelete(albumId: number, pictures: Photo[]) {
+    private doDelete(albumId: number, pictures: Photo[]): Promise<boolean> {
         console.log("doDelete")
         let promises = [];
         let pict: number[] = [];
         for (let pic of pictures) {
             pict.push(pic.idphoto);
         }
-        let promise = this.deletePictures(pict, albumId).subscribe((response) => {
-            console.log("Succeed deletePicturesSync")
-            return Promise.resolve("succeed");
-        }, (err) => {
-            console.log("Failure deletePicturesSync" + JSON.stringify(err));
-            return Promise.reject(err);
+        let promise = new Promise((resolve, reject) => {
+            this.deletePictures(pict, albumId).subscribe((response) => {
+                console.log("Succeed deletePicturesSync")
+                resolve(true);
+            }, (err) => {
+                console.log("Failure deletePicturesSync" + JSON.stringify(err));
+                reject(err);
+            })
         })
         promises.push(promise);
         return Promise.all(promises).then(() => {return true;})
     }
 
-    private waitingEdit(action: Action) {
-        this.editAlbums(action.album.id, action.album.title).subscribe((response) => {
-            console.log("EditAlbumSync " + JSON.stringify(response));
-        });
+    private waitingEdit(action: Action): Promise<boolean> {
+        return new Promise((resolve, reject) => { //Pour faire d'un observable une promise et pouvoir attendre sa fin.
+            this.editAlbums(action.album.id, action.album.title).subscribe((response) => {
+                console.log("EditAlbumSync " + JSON.stringify(response));
+                resolve(true);
+            }, (err) => {reject(err)});
+        })
     }
 
-    private waitingCreate(action: Action) {
-        this.createAlbums(action.album.title).subscribe((response) => {
-            let jsonString = JSON.stringify(response);
-            let jsonObject = JSON.parse(jsonString);
-            this.storage.storeRealId(action.album.id, jsonObject.idalbum);
+    private waitingCreate(action: Action): Promise<boolean> {
+        return new Promise((resolve, reject) => { //Pour faire d'un observable une promise et pouvoir attendre sa fin.
+            this.createAlbums(action.album.title).subscribe((response) => {
+                let promises = [];
+                let jsonString = JSON.stringify(response);
+                let jsonObject = JSON.parse(jsonString);
+                resolve(this.storage.storeRealId(action.album.id, jsonObject.idalbum));
+            }, (err) => {
+                reject(err);
+            })
         })
     }
 }

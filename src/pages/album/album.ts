@@ -96,11 +96,12 @@ export class AlbumPage {
         this.serverService.createAlbums().subscribe((result) => {
             let jsonString = JSON.stringify(result);
             let jsonObject = JSON.parse(jsonString);
-            this.navCtrl.push(PhotoPage, {albumId: jsonObject.idalbum});
-            this.albumService.addAlbum({
+            let album = {
                 id: jsonObject.idalbum, title: null,
                 date: null
-            });
+            }
+            this.navCtrl.push(PhotoPage, {album: album});
+            this.albumService.addAlbum(album);
         }, (err) => {
             console.log("impossible de créer un album" + err);
         });

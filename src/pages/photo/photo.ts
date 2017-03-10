@@ -46,13 +46,13 @@ export class PhotoPage {
         private storage: StorageService) {
         this.previousId = null;
         this.album = params.get('album');
-        this.initTitle = this.album.title;
         this.handleSocket();
         this.handleNetwork();
-        console.log(this.album.id);
     }
 
     ionViewDidEnter() {
+        this.initTitle = this.album.title;
+        console.log(this.album.id);
         if (this.album.id != this.previousId) {
             this.previousId = this.album.id;
             this.photoService.newService();
@@ -192,7 +192,7 @@ export class PhotoPage {
         for (let source of results) {
             let pic: Photo = {
                 idphoto: -Date.now(),
-                name: null,
+                name: source,
                 src: source,
                 status: null
             };

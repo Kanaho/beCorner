@@ -56,7 +56,7 @@ export class UploadService {
         }
     }
 
-    public uploadImage(albumId: number, imgId: number, filename: string) {
+    public uploadImage(albumId: number/*, imgId: number, filename: string*/) {
         var url = "http://api.becorner.dev/upload/upload";
         //var targetPath = this.pathForImage(this.lastImage);
         var filename = this.lastImage;
@@ -65,7 +65,7 @@ export class UploadService {
             fileKey: "qqfile",
             fileName: filename,
             mimeType: "image/jpeg",
-            params: {'fileName': filename, 'idphoto': imgId, 'idalbum': albumId},
+            params: {'fileName': filename, 'idphoto': this.imgId, 'idalbum': albumId},
             headers: {Authorization: this.user.token}
         };
 

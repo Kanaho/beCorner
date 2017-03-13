@@ -215,8 +215,7 @@ export class PhotoPage {
                 });
         } else {
             //this.storage.editAlbum(this.album.id, newValue);
-            let none: Photo[] = [];
-            this.storage.storeAction(this.album, ActionType.Rename, none);
+            this.storage.storeAction(this.album, ActionType.Rename, []);
         }
 
     }
@@ -320,7 +319,7 @@ export class PhotoPage {
     }
 
     toMenu(): void {
-        this.navCtrl.push(this.menu, {albumId: this.album.id});
+        this.navCtrl.push(this.menu, {album: this.album});
     }
 
     goRoot(): void {

@@ -12,6 +12,7 @@ export class AlbumService {
     }
     
     addAlbum(album: Album){
+        if (this.myAlbums.indexOf(album)<0)
         this.myAlbums.push(album);
     }
     

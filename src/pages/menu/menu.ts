@@ -8,6 +8,7 @@ import {AlbumService} from '../util/album.service';
 import {StorageService} from '../util/storage.service';
 import {PlusPage} from '../plus/plus';
 import {DeletePop} from './delete/delete';
+import {ActionType} from '../util/action';
 
 @Component({
     selector: 'menuPage',
@@ -15,7 +16,7 @@ import {DeletePop} from './delete/delete';
 })
 
 export class MenuPage {
-    private albumId: number;
+    private album: Album;
     private heure: number;
     private minute: number;
     private state: string;
@@ -25,7 +26,7 @@ export class MenuPage {
     constructor(public navCtrl: NavController, private serverService: ServerService,
         public popoverCtrl: PopoverController, public params: NavParams,
         private albumService: AlbumService, private storage: StorageService) {
-        this.albumId = params.get('albumId');
+        this.album = params.get('album');
         this.heure = 24;
         this.minute = 42;
     }
@@ -55,20 +56,20 @@ export class MenuPage {
             if (choice) {
                 console.log('Album supprimé');
                 Network.type != "none" ? this.serverDelete() : this.storageDelete();
-                this.albumService.deleteAlbum(this.albumId);
+                this.albumService.deleteAlbum(this.album.id);
                 this.navCtrl.pop({animation: 'fade-transition', direction: 'back'});
             }
         })
     }
 
     private serverDelete() {
-        this.serverService.deleteAlbums(this.albumId).subscribe((result) => {
+        this.serverService.deleteAlbums(this.album.id).subscribe((result) => {
 
         })
     }
 
     private storageDelete() {
-        this.storage.removeAlbum(this.albumId);
+        this.storage.storeAction(this.album, ActionType.Remove, []);
     }
 
     goPlus() {

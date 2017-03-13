@@ -23,9 +23,6 @@ export class AlbumPage {
         private storageService: StorageService,
         private albumService: AlbumService) {
         this.handleNetwork();
-    }
-
-    ionViewWillEnter() {
         this.displayAlbums();
     }
 
@@ -100,8 +97,7 @@ export class AlbumPage {
                 id: jsonObject.idalbum, title: null,
                 date: null
             }
-            this.navCtrl.push(PhotoPage, {album: album});
-            this.albumService.addAlbum(album);
+            this.goToPic(album);
         }, (err) => {
             console.log("impossible de créer un album" + err);
         });
@@ -114,13 +110,14 @@ export class AlbumPage {
                     title: "",
                     date: null
                 }
-        this.navCtrl.push(PhotoPage, {album: tempAlb});
+        this.goToPic(tempAlb);
         //this.storageService.storeAlbum(tempAlb);
         this.storageService.storeAction(tempAlb, ActionType.Create, []);
     }
 
     goToPic(alb: Album): void {
         this.navCtrl.push(PhotoPage, {album: alb});
+        this.albumService.addAlbum(alb);
     }
 
     goRoot(): void {

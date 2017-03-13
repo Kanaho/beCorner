@@ -200,23 +200,31 @@ export class StorageService {
         let newAction: Action = {action: action, album: album, pictures: photo};
         NativeStorage.getItem('transaction').then((result) => {
             actions = result.actions;
-            if (action == ActionType.Delete) {
-                console.log("start delete");
-                let temp = this.checkDelAction(actions, newAction);
-                actions = temp.all;
-                newAction = temp.check;
-                if (newAction.pictures.length > 0) {
+            switch (action) {
+                case ActionType.Delete:
+                    console.log("start delete");
+                    let temp = this.checkDelAction(actions, newAction);
+                    actions = temp.all;
+                    newAction = temp.check;
+                    if (newAction.pictures.length > 0) actions.push(newAction);
+                    break;
+                case ActionType.Create:
+                    console.log("store id temp");
+                    this.storeIdTemp(album.id);
                     actions.push(newAction);
-                }
-            } else {
-                console.log("add action " + action.toString());
-                actions.push(newAction);
-            }
-            if (action == ActionType.Create) {
-                console.log('Need to store an id');
-                this.storeIdTemp(album.id);
-            }
-            console.log("An action added");
+                    break;
+                case ActionType.Remove:
+                    console.log("start remove");
+                    actions = this.checkRemoveAction(actions, newAction);
+                    break;
+                case ActionType.Rename:
+                    if (album.id <0) actions = this.checkRenameAction(actions, newAction);
+                    else actions.push(newAction);
+                    break;
+                default:
+                    console.log("An action added");
+                    actions.push(newAction);
+            };
             NativeStorage.remove('transaction');
             NativeStorage.setItem('transaction', {actions: actions});
         }, (err) => {
@@ -239,11 +247,11 @@ export class StorageService {
      */
     private checkDelAction(actions: Action[], toCheck: Action) {
         console.log("checkDelAction");
-        console.log("nb action start:"  + actions.length);
-        let tempActions: Action[] = actions.slice();
+        console.log("nb action start:" + actions.length);
+        let tempActions: Action[] = actions.slice(0);
         let j = 0;
         let k = 0;
-        while (j < actions.length && toCheck.pictures.length>0) {
+        while (j < actions.length && toCheck.pictures.length > 0) {
             if ((actions[j].action == ActionType.Add) && (actions[j].album.id == toCheck.album.id)) {
                 let find, i;
                 let tempPic: Photo[] = [];
@@ -270,8 +278,32 @@ export class StorageService {
             j++;
             k++;
         }
-        console.log("nb action end:"  + actions.length);
+        console.log("nb action end:" + actions.length);
         return {all: tempActions, check: toCheck};
+    }
+
+    private checkRemoveAction(actions: Action[], newAction: Action) {
+        let tempActions: Action[] = actions.slice(0);
+        console.log(actions.length);
+        for (let action of actions) {
+            if (action.album.id == newAction.album.id) {
+                tempActions.splice(tempActions.indexOf(action), 1);
+            }
+        }
+        if (newAction.album.id > 0){
+             tempActions.push(newAction);
+        }
+        return tempActions;
+    }
+    
+    private checkRenameAction(actions: Action[], newAction: Action){
+        for(let action of actions){
+            if (action.action == ActionType.Create && action.album.id == newAction.album.id ){
+                action.album.title = newAction.album.title;
+                break;
+            }
+        }
+        return actions;
     }
 
     private storeIdTemp(id: number) {

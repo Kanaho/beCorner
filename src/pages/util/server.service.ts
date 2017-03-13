@@ -185,12 +185,30 @@ export class ServerService {
                         break;
                     case ActionType.Rename: //Changement de titre d'album
                         console.log("doEdit");
-                        promise = this.waitingEdit(action).then(() => {console.log("Edit done")});
+                        promise = this.waitingEdit(action).then((success) => {
+                            if (!success.valueOf()) {
+                                console.log("failure doEdit");
+                                actionsTemp.push(action);
+                            }
+                        });
                         break;
                     case ActionType.Create: //Creation d'album
                         console.log("doCreate");
-                        promise = this.waitingCreate(action).then(() => {console.log("Create done")});
+                        promise = this.waitingCreate(action).then((success) => {
+                            if (!success.valueOf()) {
+                                console.log("failure doCreate");
+                                actionsTemp.push(action);
+                            }
+                        });
                         break;
+                    case ActionType.Remove: //Suppression d'album
+                        console.log("doRemove");
+                        promise = this.waitingRemove(action).then((success) => {
+                            if (!success.valueOf()) {
+                                console.log("failure doRemove");
+                                actionsTemp.push(action);
+                            }
+                        });
                 }
                 promises.push(promise);
             }
@@ -253,7 +271,8 @@ export class ServerService {
                     console.log("Upload");
                     console.log("Picture" + JSON.stringify(pic));
                     this.uploadPicture(pic, jsonObject.idalbum);
-                    resolve(true);
+                    if (jsonObject.status) resolve(true);
+                    else resolve(false);
                 }, (err) => {
                     console.log("addPicturesSync" + JSON.stringify(err));
                     reject(err);
@@ -274,7 +293,10 @@ export class ServerService {
         let promise = new Promise((resolve, reject) => {
             this.deletePictures(pict, albumId).subscribe((response) => {
                 console.log("Succeed deletePicturesSync")
-                resolve(true);
+                let jsonString = JSON.stringify(response);
+                let jsonObject = JSON.parse(jsonString);
+                if (jsonObject.status) resolve(true);
+                else resolve(false);
             }, (err) => {
                 console.log("Failure deletePicturesSync" + JSON.stringify(err));
                 reject(err);
@@ -288,7 +310,10 @@ export class ServerService {
         return new Promise((resolve, reject) => { //Pour faire d'un observable une promise et pouvoir attendre sa fin.
             this.editAlbums(action.album.id, action.album.title).subscribe((response) => {
                 console.log("EditAlbumSync " + JSON.stringify(response));
-                resolve(true);
+                let jsonString = JSON.stringify(response);
+                let jsonObject = JSON.parse(jsonString);
+                if (jsonObject.status) resolve(true);
+                else resolve(false);
             }, (err) => {reject(err)});
         })
     }
@@ -296,10 +321,23 @@ export class ServerService {
     private waitingCreate(action: Action): Promise<boolean> {
         return new Promise((resolve, reject) => { //Pour faire d'un observable une promise et pouvoir attendre sa fin.
             this.createAlbums(action.album.title).subscribe((response) => {
-                let promises = [];
                 let jsonString = JSON.stringify(response);
                 let jsonObject = JSON.parse(jsonString);
-                resolve(this.storage.storeRealId(action.album.id, jsonObject.idalbum));
+                if (jsonObject.status) resolve(this.storage.storeRealId(action.album.id, jsonObject.idalbum));
+                else resolve(false);
+            }, (err) => {
+                reject(err);
+            })
+        })
+    }
+
+    private waitingRemove(action: Action): Promise<boolean> {
+        return new Promise((resolve, reject) => { //Pour faire d'un observable une promise et pouvoir attendre sa fin.
+            this.deleteAlbums(action.album.id).subscribe((response) => {
+                let jsonString = JSON.stringify(response);
+                let jsonObject = JSON.parse(jsonString);
+                if (jsonObject.status) resolve(true);
+                else resolve(false);
             }, (err) => {
                 reject(err);
             })

@@ -8,7 +8,7 @@ import {User} from './user';
 
 @Injectable()
 export class SocketService{
-    socketObserver: any;
+    socketObserver: any[] = [];
     socketService: any;
     socket: any;
     data: any = null;
@@ -16,7 +16,7 @@ export class SocketService{
     
     constructor(private user: User, private server: ServerService){
         this.socketService = Observable.create(observer =>{
-            this.socketObserver = observer;
+            this.socketObserver.push(observer);
         });      
     }
     
@@ -26,7 +26,8 @@ export class SocketService{
         this.socket.on("connect", (msg) => {
             console.log('on connect');
             this.server.doWaitingAction();
-            this.socketObserver.next({ category: 'connect', message: 'connected'});
+            for (let obs of this.socketObserver)
+                obs.next({ category: 'connect', message: 'connected'});
         });
         
         this.socket.on('disconnect', function(){
@@ -35,17 +36,18 @@ export class SocketService{
         
         this.socket.on('message', (msg) => {
             console.log(msg);
-            this.socketObserver.next({ category: 'message', message: msg});
+            //this.socketObserver.next({ category: 'message', message: msg});
         });
         
         this.socket.on('thumbnail', (msg) => {
-            console.log(msg);
-            this.socketObserver.next({category: 'thumbnail', message: msg});
+            console.log('Thumbnail received');
+            for (let obs of this.socketObserver)
+                obs.next({category: 'thumbnail', message: msg});
         })
     }
     
     sendMessage(message: string){
         this.socket.emit('message', message);
-        this.socketObserver.next({ category: 'send', message: message});
+        //this.socketObserver.next({ category: 'send', message: message});
     }
 }

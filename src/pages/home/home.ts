@@ -4,6 +4,7 @@ import {Component} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
+import {LocalNotifications, Device} from 'ionic-native';
 
 import {AlbumPage} from '../album/album';
 import {PhotoPage} from '../photo/photo';
@@ -37,8 +38,10 @@ export class HomePage {
     constructor(public navCtrl: NavController,
         private storageService: StorageService,
         private socket: SocketService,
-        private user: User) {}
-      
+        private user: User) {
+        console.log("UUID : " +  Device.uuid);
+    }
+
     getPaddingTop() {
         return (window.innerHeight / 100) * 25;
     }
@@ -76,6 +79,13 @@ export class HomePage {
                     this.socket.initialize();
                     this.socket.socketService.subscribe(event => {
                         console.log('received from serveur...', event);
+                        if (event.category === 'thumbnail')  {
+                            console.log("notification incoming")
+                            LocalNotifications.schedule({
+                                text: 'Votre miniature est arrivée !',
+                                sound: null
+                            });
+                        }
                     })
                 } else {
                     console.log("token Expired");

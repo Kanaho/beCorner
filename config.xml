@@ -60,4 +60,5 @@
         <variable name="DEEPLINK_5_SCHEME" value=" " />
         <variable name="DEEPLINK_5_HOST" value=" " />
     </plugin>
+    <plugin name="cordova-plugin-uniquedeviceid" spec="~1.3.2" />
 </widget>

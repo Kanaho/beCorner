@@ -66,6 +66,8 @@ export class PhotoPage {
 
     ionViewWillLeave() {
         if (this.initTitle != this.album.title) this.editTitle(this.album.title);
+        //Unsubscribe le dernier observer, à savoir celui-ci
+        this.socket.socketObserver[this.socket.socketObserver.length-1].unsubscribe();
     }
 
     private requestPicture() {
@@ -119,8 +121,8 @@ export class PhotoPage {
 
     private handleSocket() {
         this.socket.socketService.subscribe(event => {
-            console.log('from serveur..', event);
             if (event.category === 'thumbnail') {
+                console.log("Thumbnail Photo");
                 let jsonString = JSON.stringify(event.message);
                 let jsonObject = JSON.parse(jsonString);
                 this.photoService.pictureUp(jsonObject.idphoto, "http://api.becorner.dev" +jsonObject.src);

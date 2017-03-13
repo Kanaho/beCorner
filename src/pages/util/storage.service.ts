@@ -284,13 +284,13 @@ export class StorageService {
 
     private checkRemoveAction(actions: Action[], newAction: Action) {
         let tempActions: Action[] = actions.slice(0);
-        console.log(actions.length);
         for (let action of actions) {
             if (action.album.id == newAction.album.id) {
                 tempActions.splice(tempActions.indexOf(action), 1);
             }
         }
         if (newAction.album.id > 0){
+            //N'ajoute l'action que si elle agit sur un album sur le serveur
              tempActions.push(newAction);
         }
         return tempActions;

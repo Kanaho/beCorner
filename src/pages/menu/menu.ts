@@ -6,6 +6,7 @@ import {Network} from 'ionic-native';
 import {ServerService} from '../util/server.service';
 import {AlbumService} from '../util/album.service';
 import {StorageService} from '../util/storage.service';
+import {PanierPage} from '../panier/panier';
 import {PlusPage} from '../plus/plus';
 import {DeletePop} from './delete/delete';
 import {ActionType} from '../util/action';
@@ -20,6 +21,7 @@ export class MenuPage {
     private heure: number;
     private minute: number;
     private state: string;
+    private nbBadge: number = 2;
     plusPage = PlusPage;
     null: any = null;
 
@@ -74,5 +76,9 @@ export class MenuPage {
 
     goPlus() {
         this.navCtrl.push(this.plusPage);
+    }
+    
+    goPanier(){
+        this.navCtrl.push(PanierPage);
     }
 }

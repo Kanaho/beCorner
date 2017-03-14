@@ -11,33 +11,40 @@
         </ion-buttons>
     </ion-navbar>
 </ion-header>
+
 <ion-content>
-    <ion-grid class="gridComment">
-        <ion-row class="commentPic"
-                 [style.height.px]="getSquareSize()"
-                 [style.background-image]="getBackground()">
-            <ion-col left bottom>
-                <button ion-button icon-only class="commentButton">
-                    <ion-icon name="thumbs-up"> Like</ion-icon>
-                </button>
-            </ion-col>
-            <ion-col bottom> 
-                <button ion-button icon-only class="commentButton" (click)="presentComment()">
-                    <ion-icon name="chatbubbles"> Comment</ion-icon>
-                </button>
-            </ion-col>
-            <ion-col bottom>
-                <button ion-button icon-only class="commentButton right">
-                    <ion-icon name="print"> Print</ion-icon>
-                </button>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col>
-                <ion-list class="commentList">
-                    <ion-item>One Comment</ion-item>
-                </ion-list>
-            </ion-col>
-        </ion-row>
-    </ion-grid>
+    <ion-slides class="slideBox">
+        <ion-slide *ngFor="let photo of photoService.getPictures()" class="slide">
+
+            <ion-grid class="gridComment">
+                <ion-row class="commentPic"
+                         [style.height.px]="getSquareSize()"
+                         [style.background-image]="getBackground()">
+                    <ion-col left bottom>
+                        <button ion-button icon-only class="commentButton">
+                            <ion-icon name="thumbs-up"> Like</ion-icon>
+                        </button>
+                    </ion-col>
+                    <ion-col bottom> 
+                        <button ion-button icon-only class="commentButton" (click)="presentComment()">
+                            <ion-icon name="chatbubbles"> Comment</ion-icon>
+                        </button>
+                    </ion-col>
+                    <ion-col bottom>
+                        <button ion-button icon-only class="commentButton right">
+                            <ion-icon name="print"> Print</ion-icon>
+                        </button>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col>
+                        <ion-list class="commentList">
+                            <ion-item>One Comment</ion-item>
+                        </ion-list>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+
+        </ion-slide>
+    </ion-slides>
 </ion-content>

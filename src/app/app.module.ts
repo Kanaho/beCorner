@@ -20,6 +20,7 @@ import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
 import {PlusPage} from '../pages/plus/plus';
 import {AlbumPage} from '../pages/album/album';
+import {PanierPage} from '../pages/panier/panier';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
 
@@ -44,6 +45,7 @@ const cloudSettings: CloudSettings = {
         SignPage,
         PlusPage,
         AlbumPage,
+        PanierPage
     ],
     imports: [
         IonicModule.forRoot(MyApp),
@@ -66,6 +68,7 @@ const cloudSettings: CloudSettings = {
         SignPage,
         PlusPage,
         AlbumPage,
+        PanierPage
     ],
     providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

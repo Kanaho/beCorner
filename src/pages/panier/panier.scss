@@ -1,0 +1,29 @@
+panierPage{
+    .multiChoice{
+        background-color: transparent;
+        
+        padding-bottom: 10px;
+    }
+    
+    .singleChoice{
+        border: 1px solid #be093b;
+        border-radius: 10%;
+        width: 180px !important;
+        color: #d84b66 !important;
+        height: 30px;
+        padding-top: 4px !important;
+        padding-bottom: 0px;
+    }
+    
+    .choiceList{
+        margin-left: -15px !important;
+        padding-right: 0px;
+        margin-right: -80px;
+        padding-left: 5px;
+    }
+    
+    .choiceItem{
+        margin-right: -200px !important;
+        background-color: transparent;
+    }
+}

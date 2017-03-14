@@ -13,6 +13,8 @@ import {SocketService} from '../util/socket.service';
 import {StorageService} from '../util/storage.service';
 import {User} from '../util/user';
 
+import {MenuPage} from '../menu/menu'
+
 import {tokenNotExpired, JwtHelper} from 'angular2-jwt';
 
 @Component({

@@ -1,0 +1,38 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Panier</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-grid>
+        <ion-row center style="text-align: center">
+            <ion-col>
+                <ion-list no-lines class="choiceList">
+                    <ion-item class="choiceItem">
+                        <ion-select placeholder="Format" [(ngModel)]="formatChoose"
+                                    [selectOptions]="formatOptions" class="singleChoice">
+                            <ion-option *ngFor="let format of formats" value={{format}}>{{format}}</ion-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item class="choiceItem">
+                        <ion-select placeholder="Autre"
+                                    [selectOptions]="autreOptions" class="singleChoice">
+                            <ion-option></ion-option>
+                        </ion-select>
+                    </ion-item>
+                    <ion-item class="choiceItem">
+                        <ion-select placeholder="Quantité" [(ngModel)]="quantity"
+                                    [selectOptions]="quantityOptions" class="singleChoice">
+                            <ion-option *ngFor="let i of quantities" value={{i}}>{{i}}</ion-option>
+                        </ion-select>
+                    </ion-item>
+                </ion-list>
+            </ion-col>
+            <ion-col>
+                Album Couverture
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>
+

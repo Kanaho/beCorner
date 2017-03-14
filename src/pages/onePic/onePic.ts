@@ -18,7 +18,8 @@ export class OnePic {
     private title: string;
 
     //private Canvas = require('canvas');
-
+    
+    //ION-SLIDES POUR PARCOURIR TOUTES LES PHOTOS
     constructor(private photoService: PhotoService,
         public navCtrl: NavController,
         public params:NavParams,

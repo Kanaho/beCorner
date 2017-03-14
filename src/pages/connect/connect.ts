@@ -62,15 +62,11 @@ export class ConnectPage {
     googleLogin() {
         GooglePlus.login({
             //'scopes': '',
-            'webClientId': '423852721492-m7q9k10v3qbd66re8vfjpkbt0cm795eq.apps.googleusercontent.com '
-        }).then(
-            () =>
-                console.log("Login Succed"),
-            function (msg) {
-                alert(msg);
-                console.log(msg);
-            }
-            );
+            'webClientId': '423852721492-dq82pkggdo6optamipfisvss1jtser6b.apps.googleusercontent.com',
+            'offline': true,
+        }).then((result) =>
+            console.log("Login Succed" + JSON.stringify(result))
+            , (err) => {console.log(JSON.stringify(err))});
     }
 
     facebookLogin() {

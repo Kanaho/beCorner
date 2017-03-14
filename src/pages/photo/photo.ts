@@ -304,7 +304,7 @@ export class PhotoPage {
             : window.innerWidth / 8);
     }
 
-    upload(): void {
+    share(): void {
         SocialSharing.share("Regarde moi cet album : beCorner://home", null,
             null, null).then(() => {
                 console.log("Share done");

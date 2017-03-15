@@ -1,0 +1,29 @@
+<div class="popoTitle">
+    Choississez votre mode de partage
+</div>
+<div class='popoContent'>
+    <ion-list radio-group [(ngModel)]="choice">
+        <ion-item>
+            <!-- Tout le monde a accès et peut ajouter des photos-->
+            <ion-label>Public<p>Accès ouvert à tous</p></ion-label>
+            <ion-radio value="Public"></ion-radio>
+            
+        </ion-item>
+        <ion-item>
+            <!-- Ceux qui ont le lien ont accès et peuvent ajouter de photo -->
+            <ion-label>Protected<p>Accès limité</p></ion-label>
+            <ion-radio value="Protected"></ion-radio>
+            
+        </ion-item>
+        <ion-item>
+            <!-- Ceux qui ont le lien ont accès mais ne peuvent ajouter des photos 
+                qu'avec le générateur du lien -->
+            <ion-label>Private<p>Confirmer les ajouts</p></ion-label>
+            <ion-radio value="Private"></ion-radio>
+            
+        </ion-item>
+    </ion-list>
+    <div class="popoButton">
+        <button ion-button class='confirmButton'(click)="confirm()">Confirmer</button> 
+    </div>
+</div>

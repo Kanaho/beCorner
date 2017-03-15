@@ -26,4 +26,24 @@ panierPage{
         margin-right: -200px !important;
         background-color: transparent;
     }
+    
+    .toDisplay{
+        object-fit: cover;
+        overflow: hidden;
+        padding-top: 10px;
+    }
+    
+    .delButton{
+        background-color: transparent;
+        color: red;
+    }
+    
+    .price{
+        background-color: #be093b;
+        border-radius: 8px;
+        color: #ffffff;
+        text-align: center !important;
+        font-weight: bold;
+    }
+    
 }

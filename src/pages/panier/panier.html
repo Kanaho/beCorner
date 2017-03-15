@@ -6,7 +6,16 @@
 
 <ion-content>
     <ion-grid>
-        <ion-row center style="text-align: center">
+        <ion-row style="text-align: center">
+            <ion-col>
+                <div>Title  |<button class="delButton">Supprimer</button></div>
+                <img ion-img src="./img/logo.jpg" class="toDisplay"
+                     [style.width.px]="getSquareSize()" 
+                     [style.height.px]="getSquareSize()"/>
+                <div class="price">
+                    42,00 €
+                </div>
+            </ion-col>
             <ion-col>
                 <ion-list no-lines class="choiceList">
                     <ion-item class="choiceItem">
@@ -22,15 +31,13 @@
                         </ion-select>
                     </ion-item>
                     <ion-item class="choiceItem">
-                        <ion-select placeholder="Quantité" [(ngModel)]="quantity"
+                        <!--<ion-select placeholder="Quantité" [(ngModel)]="quantity"
                                     [selectOptions]="quantityOptions" class="singleChoice">
                             <ion-option *ngFor="let i of quantities" value={{i}}>{{i}}</ion-option>
-                        </ion-select>
+                        </ion-select>-->
+                        <input type="number" placeholder="Quantité" [(ngModel)]="quantity" class="singleChoice">
                     </ion-item>
                 </ion-list>
-            </ion-col>
-            <ion-col>
-                Album Couverture
             </ion-col>
         </ion-row>
     </ion-grid>

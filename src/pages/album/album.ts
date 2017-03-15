@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
 import {Network} from 'ionic-native';
@@ -14,7 +14,8 @@ import {ActionType} from '../util/action';
     selector: 'album-page',
     templateUrl: 'album.html',
 })
-export class AlbumPage {
+export class AlbumPage implements OnDestroy{
+    private connectSub: any
     private showMine: boolean = true;
     private showShared: boolean = true;
 
@@ -26,30 +27,29 @@ export class AlbumPage {
         this.displayAlbums();
     }
 
+    ngOnDestroy(){
+        this.connectSub.unsubscribe();
+    }
+    
     private displayAlbums() {
-        this.storageService.getToken().then((token) => {
-            this.albumService.clearAll();
-            Network.type != "none" ? this.collectAlbums(token) : this.getAlbums();
-        }, (err) => {
-            console.log("cannot collect albums" + err);
-        })
+        this.albumService.clearAll();
+        Network.type != "none" ? this.collectAlbums() : this.getAlbums();
     }
 
     private handleNetwork() {
         let online = Network.type != "none";
-        let connectSub = Network.onConnect().subscribe(() => {
+        this.connectSub = Network.onConnect().subscribe(() => {
             if (!online) {//Si il n'était pas en ligne
                 online = true;
-                connectSub.unsubscribe(); //Survit à la fermeture de la page
                 console.log("Album connected");
                 this.displayAlbums();
             }
         })
     }
 
-    private collectAlbums(token: string) {
+    private collectAlbums() {
         //Récupère les albums depuis le serveur
-        this.serverService.requestAlbums(token).subscribe((response) => {
+        this.serverService.requestAlbums().subscribe((response) => {
             let jsonString = JSON.stringify(response);
             let jsonObject = JSON.parse(jsonString);
             for (let object of jsonObject.albums) {
@@ -106,10 +106,10 @@ export class AlbumPage {
     private stockNewAlbum() {
         //Prepare un album dont l'id sera demandé au serveur à la (re)connexion
         let tempAlb = {
-                    id: -Date.now(),
-                    title: "",
-                    date: null
-                }
+            id: -Date.now(),
+            title: "",
+            date: null
+        }
         this.goToPic(tempAlb);
         //this.storageService.storeAlbum(tempAlb);
         this.storageService.storeAction(tempAlb, ActionType.Create, []);

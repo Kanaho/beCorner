@@ -19,7 +19,7 @@
             <ion-grid class="gridComment">
                 <ion-row class="commentPic"
                          [style.height.px]="getSquareSize()"
-                         [style.background-image]="getBackground()">
+                         [style.background-image]="getBackground(photo)">
                     <ion-col left bottom>
                         <button ion-button icon-only class="commentButton">
                             <ion-icon name="thumbs-up"> Like</ion-icon>
@@ -44,7 +44,6 @@
                     </ion-col>
                 </ion-row>
             </ion-grid>
-
         </ion-slide>
     </ion-slides>
 </ion-content>

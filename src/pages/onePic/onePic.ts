@@ -50,8 +50,8 @@ export class OnePic {
         return window.innerWidth;
     }
     
-    getBackground(){
-        return "url(" + this.pic.src+")";
+    getBackground(photo: Photo){
+        return "url(" + photo.src+")";
     }
     
     presentComment(){

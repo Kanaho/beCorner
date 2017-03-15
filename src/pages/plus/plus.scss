@@ -1,51 +1,53 @@
-.plusHead{
-    background-image: url('../img/plusHead.jpg');
-    padding: 30px 0px 35px 0px;
-    width: 120%;
-    margin-left: -10%;
-    background-size:cover;
-    background-repeat:no-repeat;
-    background-position: center center;
-}
+plus{
+    .plusHead{
+        background-image: url('../img/plusHead.jpg');
+        padding: 30px 0px 35px 0px;
+        width: 120%;
+        margin-left: -10%;
+        background-size:cover;
+        background-repeat:no-repeat;
+        background-position: center center;
+    }
 
-.plusGrid{
-    text-align: center;
-}
+    .plusGrid{
+        text-align: center;
+    }
 
-.title, .titleText, .priceSel{
-    color: #FFFFFF !important;
-}
+    .title, .titleText, .priceSel{
+        color: #FFFFFF !important;
+    }
 
-.title{
-    font-size: 40px;
-}
+    .title{
+        font-size: 40px;
+    }
 
-.titleText{
-    padding-top: 5px;
-    font-size: 12px;
-}
+    .titleText{
+        padding-top: 5px;
+        font-size: 12px;
+    }
 
-.subTitle{
-    padding-top: 20px;
-    font-size: 20px;
-}
+    .subTitle{
+        padding-top: 20px;
+        font-size: 20px;
+    }
 
-.price{
-    color: #00aa9b;
-    font-size: 20px;
-    padding: 15px;
-}
+    .price{
+        color: #00aa9b;
+        font-size: 20px;
+        padding: 15px;
+    }
 
-.amount{
-    font-size: 50px;
-}
+    .amount{
+        font-size: 50px;
+    }
 
-.priceSel{
-    background-color: #00aa9b;
-}
+    .priceSel{
+        background-color: #00aa9b;
+    }
 
-.advantage{
-    font-size: 15px;
-    margin-bottom: -15px;
-    background-color: transparent;
+    .advantage{
+        font-size: 15px;
+        margin-bottom: -15px;
+        background-color: transparent;
+    }
 }

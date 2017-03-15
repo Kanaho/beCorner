@@ -34,4 +34,8 @@ export class PanierPage {
            this.quantities.push(i);
         }
     }
+    
+    getSquareSize() {
+        return window.innerWidth / 4;
+    }
 }

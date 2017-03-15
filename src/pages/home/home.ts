@@ -4,18 +4,19 @@ import {Component} from '@angular/core';
 import {trigger, state, style, transition, animate} from '@angular/core';
 
 import {NavController} from 'ionic-angular';
-import {LocalNotifications, Device} from 'ionic-native';
+import {LocalNotifications, Network} from 'ionic-native';
 
 import {AlbumPage} from '../album/album';
 import {PhotoPage} from '../photo/photo';
 import {ConnectPage} from '../connect/connect';
 import {SocketService} from '../util/socket.service';
 import {StorageService} from '../util/storage.service';
+import {ServerService} from '../util/server.service';
 import {User} from '../util/user';
 
-import {MenuPage} from '../menu/menu'
-
 import {tokenNotExpired, JwtHelper} from 'angular2-jwt';
+
+import {OrderPage} from '../order/order';
 
 @Component({
     selector: 'page-home',
@@ -40,9 +41,8 @@ export class HomePage {
     constructor(public navCtrl: NavController,
         private storageService: StorageService,
         private socket: SocketService,
-        private user: User) {
-        console.log("UUID : " +  Device.uuid);
-    }
+        private serveur: ServerService,
+        private user: User) {}
 
     getPaddingTop() {
         return (window.innerHeight / 100) * 25;
@@ -77,30 +77,43 @@ export class HomePage {
             this.storageService.getToken().then((token) => {
                 if (tokenNotExpired(null, token)) {
                     console.log("Token : " + token);
-                    this.user.token = token;
-                    this.socket.initialize();
-                    this.socket.socketService.subscribe(event => {
-                        console.log('received from serveur...', event);
-                        if (event.category === 'thumbnail')  {
-                            console.log("notification incoming")
-                            LocalNotifications.schedule({
-                                text: 'Votre miniature est arrivée !',
-                                sound: null
-                            });
-                        }
-                    })
+                    this.handleLaunchApp(token);
                 } else {
                     console.log("token Expired");
                 }
             }, (err) => {
                 console.log("not logged in" + err);
+                if (Network.type != "none")
+                this.serveur.getToken().subscribe((response) => {
+                    let jsonString = JSON.stringify(response);
+                    let jsonResponse = JSON.parse(jsonString);
+                    this.storageService.storeToken(jsonResponse.token);
+                    this.handleLaunchApp(jsonResponse.token);
+                })
             });
         }
-        else if (tokenNotExpired(null, this.user.token)) {
+        else {
             console.log(this.jwtHelper.decodeToken(this.user.token));
             console.log("logged in");
-        } else {
-            console.log("token Expired");
         }
+    }
+
+    private handleLaunchApp(token: string) {
+        this.user.token = token;
+        this.socket.initialize();
+        this.socket.socketService.subscribe(event => {
+            console.log('received from serveur...', event);
+            if (event.category === 'thumbnail') {
+                console.log("notification incoming")
+                LocalNotifications.schedule({
+                    text: 'Votre miniature est arrivée !',
+                    sound: null
+                });
+            }
+        })
+    }
+    
+    order() {
+        this.navCtrl.push(OrderPage);
     }
 }

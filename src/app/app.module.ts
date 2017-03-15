@@ -16,11 +16,13 @@ import {MenuPage} from '../pages/menu/menu';
 import {DeletePop} from '../pages/menu/delete/delete';
 import {OnePic} from '../pages/onePic/onePic';
 import {CommentPop} from '../pages/onePic/comment/comment';
+import {SharePop} from '../pages/photo/share/share';
 import {ConnectPage} from '../pages/connect/connect';
 import {SignPage} from '../pages/connect/sign/sign';
 import {PlusPage} from '../pages/plus/plus';
 import {AlbumPage} from '../pages/album/album';
 import {PanierPage} from '../pages/panier/panier';
+import {OrderPage} from '../pages/order/order';
 
 import {FadeTransition} from '../pages/transition/FadeTransition';
 
@@ -41,11 +43,13 @@ const cloudSettings: CloudSettings = {
         DeletePop,
         OnePic,
         CommentPop,
+        SharePop,
         ConnectPage,
         SignPage,
         PlusPage,
         AlbumPage,
-        PanierPage
+        PanierPage,
+        OrderPage
     ],
     imports: [
         IonicModule.forRoot(MyApp),
@@ -64,11 +68,13 @@ const cloudSettings: CloudSettings = {
         DeletePop,
         OnePic,
         CommentPop,
+        SharePop,
         ConnectPage,
         SignPage,
         PlusPage,
         AlbumPage,
-        PanierPage
+        PanierPage,
+        OrderPage
     ],
     providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })

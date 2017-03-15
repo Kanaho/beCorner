@@ -19,10 +19,22 @@ export class ServerService {
         private uploadService: UploadService, private storage: StorageService,
         private albumService: AlbumService) {}
 
+    getToken(): Observable<string[]> {
+
+        let serveurUrl = 'http://api.becorner.dev/auth/getToken';
+
+        let params = new URLSearchParams();
+
+        return this.http
+            .get(serveurUrl, {search: params})
+            .map(response => <string[]> response.json());
+
+    }
+    
     /*
      * Connect via Facebook
      */
-    fbConnect(token: string, id: string, mail?: string): Observable<string[]> {
+    fbConnect(token: string, id: string, mail?: string) {
 
         let serveurUrl = 'http://api.becorner.dev/auth/facebookLogin';
 
@@ -31,13 +43,11 @@ export class ServerService {
         params.set('id', id);
         if (mail != null) params.set('mail', mail);
 
-        return this.http
-            .get(serveurUrl, {search: params})
-            .map(response => <string[]> response.json());
+        return this.request(serveurUrl, params);
 
     }
 
-    requestAlbums(token: string): Observable<string[]> {
+    requestAlbums(): Observable<string[]> {
 
         let serveurUrl = 'http://api.becorner.dev/album/getAlbums';
 
@@ -111,13 +121,21 @@ export class ServerService {
         //this.uploadService.uploadImage(albumId, picture.idphoto, picture.name);
     }
 
+    getShareLink(idAlbum: number, choice: string) {
+        let serveurUrl = 'http://api.becorner.dev/..?';
+
+        let params = {idalbum: idAlbum, choice: choice};
+
+        return this.appHttp.post(serveurUrl, params);
+    }
+
     private request(serveurUrl: string, params: URLSearchParams) {
         return this.appHttp
             .get(serveurUrl, {search: params})
             .map(response => <string[]> response.json());
     }
 
-    doWaitingTask() {
+    /*doWaitingTask() {
         this.storage.getAlbums().then((result) => {
             for (let album of result) {
                 this.createAlbums(album.title).subscribe((result) => {
@@ -153,7 +171,7 @@ export class ServerService {
         }, (err) => {
             console.log("getAlbumSync" + JSON.stringify(err));
         })
-    }
+    }*/
 
     doWaitingAction() {
         console.log("doWaiting");

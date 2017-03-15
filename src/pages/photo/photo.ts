@@ -1,6 +1,6 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import {NavController, NavParams} from 'ionic-angular';
+import {NavController, NavParams, PopoverController} from 'ionic-angular';
 import {ImagePicker, SocialSharing, Network} from 'ionic-native';
 import {Platform} from 'ionic-angular';
 
@@ -15,6 +15,7 @@ import {ConnectPage} from '../connect/connect';
 import {User} from '../util/user';
 import {Photo} from '../util/photo';
 import {ActionType} from '../util/action';
+import {SharePop} from './share/share';
 
 @Component({
     selector: 'photo-home',
@@ -22,7 +23,7 @@ import {ActionType} from '../util/action';
 })
 
 
-export class PhotoPage {
+export class PhotoPage implements OnInit{
     private album: Album;
     private previousId: number;
     private initTitle: string;
@@ -43,14 +44,15 @@ export class PhotoPage {
         private albumService: AlbumService,
         private user: User,
         private socket: SocketService,
-        private storage: StorageService) {
+        private storage: StorageService,
+        public popoverCtrl: PopoverController) {
         this.previousId = null;
         this.album = params.get('album');
         this.handleSocket();
         this.handleNetwork();
     }
 
-    ionViewDidEnter() {
+    ngOnInit() {
         this.initTitle = this.album.title;
         console.log(this.album.id);
         if (this.album.id != this.previousId) {
@@ -67,7 +69,7 @@ export class PhotoPage {
     ionViewWillLeave() {
         if (this.initTitle != this.album.title) this.editTitle(this.album.title);
         //Unsubscribe le dernier observer, à savoir celui-ci
-        this.socket.socketObserver[this.socket.socketObserver.length-1].unsubscribe();
+        this.socket.socketObserver[this.socket.socketObserver.length - 1].unsubscribe();
     }
 
     private requestPicture() {
@@ -101,7 +103,6 @@ export class PhotoPage {
     private getPictures() {
         //Recupere les photos du storage si hors-ligne.
         this.storage.getPictures(this.album.id).then((pictures) => {
-            console.log("found");
             for (let pic of pictures) {
                 let photo = {
                     idphoto: pic.idphoto,
@@ -109,12 +110,11 @@ export class PhotoPage {
                     src: pic.src,
                     status: pic.status
                 }
-                console.log(photo.idphoto);
                 this.photoService.addOnePicture(photo);
             }
             this.setupGrid();
         }, (err) => {
-            if (err.code == 2 && this.album.id >0) alert("Impossible de charger les photos existantes");
+            if (err.code == 2 && this.album.id > 0) alert("Impossible de charger les photos existantes");
             console.log("getPictures " + JSON.stringify(err));
         });
     }
@@ -125,7 +125,7 @@ export class PhotoPage {
                 console.log("Thumbnail Photo");
                 let jsonString = JSON.stringify(event.message);
                 let jsonObject = JSON.parse(jsonString);
-                this.photoService.pictureUp(jsonObject.idphoto, "http://api.becorner.dev" +jsonObject.src);
+                this.photoService.pictureUp(jsonObject.idphoto, "http://api.becorner.dev" + jsonObject.src);
             }
         });
     }
@@ -236,7 +236,7 @@ export class PhotoPage {
         } else {
             this.photoService.setSelected(imgId);
             if (!this.photoService.getSelected().status)
-                this.navCtrl.push(this.onePic, {title: this.album.id},
+                this.navCtrl.push(this.onePic, {title: this.album.title},
                     {animation: 'fade-transition', direction: 'forward'});
         }
     }
@@ -305,12 +305,24 @@ export class PhotoPage {
     }
 
     share(): void {
-        SocialSharing.share("Regarde moi cet album : beCorner://home", null,
-            null, null).then(() => {
-                console.log("Share done");
-            }, () => {
-                console.log("Share cancelled");
-            })
+        let popover = this.popoverCtrl.create(SharePop);
+        popover.present();
+        popover.onDidDismiss((choice) => {
+            if (choice != null && 0 > 1) {
+                //Popover a retourné un choix
+                this.serverService.getShareLink(this.album.id, choice).subscribe((response) => {
+                    let jsonString = JSON.stringify(response);
+                    let jsonResponse = JSON.parse(jsonString);
+                    SocialSharing.share("Regarde moi cet album : " + jsonResponse.message, null,
+                        null, null).then(() => {
+                            console.log("Share done");
+                        }, () => {
+                            console.log("Share cancelled");
+                        })
+                })
+            }
+        })
+
     }
 
     print(): void {
